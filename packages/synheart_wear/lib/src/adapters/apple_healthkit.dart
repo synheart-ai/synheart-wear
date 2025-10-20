@@ -1,5 +1,4 @@
 import '../../synheart_wear.dart';
-import '../core/models.dart';
 import 'wear_adapter.dart';
 
 class AppleHealthKitAdapter implements WearAdapter {
