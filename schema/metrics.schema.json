@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Synheart Metrics v1",
+  "type": "object",
+  "required": [
+    "timestamp",
+    "device_id",
+    "source",
+    "metrics"
+  ],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "device_id": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "hr": {
+          "type": "number"
+        },
+        "hrv_rmssd": {
+          "type": "number"
+        },
+        "hrv_sdnn": {
+          "type": "number"
+        },
+        "steps": {
+          "type": "number"
+        },
+        "calories": {
+          "type": "number"
+        },
+        "stress": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": true
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "battery": {
+          "type": "number"
+        },
+        "firmware_version": {
+          "type": "string"
+        },
+        "synced": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}
