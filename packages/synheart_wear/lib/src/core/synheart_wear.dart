@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../adapters/wear_adapter.dart';
 import 'models.dart';
 import '../normalization/normalizer.dart';
 import '../adapters/apple_healthkit.dart';
@@ -15,10 +16,15 @@ class SynheartWear {
   StreamController<WearMetrics>? _hrStreamController;
   StreamController<WearMetrics>? _hrvStreamController;
   Timer? _streamTimer;
+  final Map<DeviceAdapter, WearAdapter> _adapterRegistry;
 
-  SynheartWear({SynheartWearConfig? config})
-      : config = config ?? const SynheartWearConfig(),
-        _normalizer = Normalizer();
+  SynheartWear({SynheartWearConfig? config, Map<DeviceAdapter, WearAdapter>? adapters})
+    : config = config ?? const SynheartWearConfig(),
+      _normalizer = Normalizer(),
+      _adapterRegistry = adapters ?? {
+        DeviceAdapter.appleHealthKit: AppleHealthKitAdapter(),
+        DeviceAdapter.fitbit: FitbitAdapter(),
+      };
 
   /// Initialize the SDK with permissions and setup
   Future<void> initialize() async {
@@ -49,23 +55,13 @@ class SynheartWear {
 
       // Gather data from enabled adapters
       final adapterData = <WearMetrics?>[];
-      
-      if (config.isAdapterEnabled(DeviceAdapter.appleHealthKit)) {
+      for (final adapter in _enabledAdapters()) {
         try {
-          final appleData = await AppleHealthKitAdapter.readSnapshot();
-          adapterData.add(appleData);
+          final data = await adapter.readSnapshot();
+          adapterData.add(data);
         } catch (e) {
-          // Log error but continue with other adapters
-          print('Apple HealthKit error: $e');
-        }
-      }
-
-      if (config.isAdapterEnabled(DeviceAdapter.fitbit)) {
-        try {
-          final fitbitData = await FitbitAdapter.readSnapshot();
-          adapterData.add(fitbitData);
-        } catch (e) {
-          print('Fitbit error: $e');
+          // Keep non-fatal, tag by adapter id
+          print('${adapter.id} error: $e');
         }
       }
 
@@ -195,26 +191,24 @@ class SynheartWear {
   /// Get required permissions based on enabled adapters
   Set<PermissionType> _getRequiredPermissions() {
     final permissions = <PermissionType>{};
-    
-    if (config.isAdapterEnabled(DeviceAdapter.appleHealthKit)) {
-      permissions.addAll({PermissionType.heartRate, PermissionType.heartRateVariability});
+    for (final adapter in _enabledAdapters()) {
+      permissions.addAll(adapter.supportedPermissions);
     }
-    
-    if (config.isAdapterEnabled(DeviceAdapter.fitbit)) {
-      permissions.addAll({PermissionType.heartRate, PermissionType.steps, PermissionType.calories});
-    }
-    
     return permissions;
+  }
+
+  // Helper to get enabled adapter instances
+  List<WearAdapter> _enabledAdapters() {
+    return config.enabledAdapters
+        .where(_adapterRegistry.containsKey)
+        .map((d) => _adapterRegistry[d]!)
+        .toList();
   }
 
   /// Initialize enabled adapters
   Future<void> _initializeAdapters() async {
-    if (config.isAdapterEnabled(DeviceAdapter.appleHealthKit)) {
-      await AppleHealthKitAdapter.ensurePermissions();
-    }
-    
-    if (config.isAdapterEnabled(DeviceAdapter.fitbit)) {
-      await FitbitAdapter.ensurePermissions();
+    for (final adapter in _enabledAdapters()) {
+      await adapter.ensurePermissions();
     }
   }
 

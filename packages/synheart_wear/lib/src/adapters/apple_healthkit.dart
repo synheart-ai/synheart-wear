@@ -1,11 +1,23 @@
+import '../../synheart_wear.dart';
 import '../core/models.dart';
+import 'wear_adapter.dart';
 
-class AppleHealthKitAdapter {
-  static Future<void> ensurePermissions() async {
+class AppleHealthKitAdapter implements WearAdapter {
+
+  @override
+  String get id => 'apple_healthkit';
+
+  @override
+  Set<PermissionType> get supportedPermissions => const {
+    PermissionType.heartRate,
+    PermissionType.heartRateVariability,
+  };
+
+  Future<void> ensurePermissions() async {
     // TODO: Implement HealthKit permission requests via platform channel.
   }
 
-  static Future<WearMetrics?> readSnapshot() async {
+  Future<WearMetrics?> readSnapshot() async {
     // TODO: Read HR, HRV, steps via HealthKit bridge.
     return WearMetrics(
       timestamp: DateTime.now().toUtc(),

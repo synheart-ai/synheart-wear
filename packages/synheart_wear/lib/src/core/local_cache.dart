@@ -90,7 +90,7 @@ class LocalCache {
       if (!await cacheDir.exists()) return;
 
       final cutoffDate = DateTime.now().subtract(maxAge);
-      final files = await cacheDir.list().cast<File>();
+      final files = await cacheDir.list().cast<File>().toList();
       
       for (final file in files) {
         try {
@@ -116,7 +116,7 @@ class LocalCache {
         return {'total_sessions': 0, 'cache_size_bytes': 0, 'oldest_session': null};
       }
 
-      final files = await cacheDir.list().cast<File>();
+      final files = await cacheDir.list().cast<File>().toList();
       int totalSessions = 0;
       int totalSize = 0;
       DateTime? oldestSession;
