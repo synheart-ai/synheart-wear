@@ -259,7 +259,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- **Israel Goytom** - *Initial work* - [@israelgoytom](https://github.com/israelgoytom)
+- **Israel Goytom** - *Initial work* - [@israelgoytom](https://github.com/isrugeek)
 - **Synheart AI Team** - *RFC Design & Architecture*
 
 ---
