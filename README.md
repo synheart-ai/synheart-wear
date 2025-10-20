@@ -4,7 +4,7 @@
 [![Flutter](https://img.shields.io/badge/flutter-%3E%3D3.22.0-blue.svg)](https://flutter.dev)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-**Unified wearable SDK for Synheart** — Cross-device, cross-platform biometric data ingestion with a single normalized output format. Stream HR, HRV, steps, calories, and stress signals from Apple Watch, Fitbit, Garmin, Whoop, and Samsung devices into your Flutter applications.
+**Unified wearable SDK** — Cross-device, cross-platform biometric data normalization with a single standardized output format. Stream HR, HRV, steps, calories, and stress signals from Apple Watch, Fitbit, Garmin, Whoop, and Samsung devices into your Flutter applications.
 
 ## 🚀 Features
 
@@ -13,8 +13,7 @@
 - **🔄 Real-Time Streaming**: Live HR and HRV data streams
 - **📊 Unified Schema**: Consistent data format across all devices
 - **🔒 Privacy-First**: Consent-based data access with encryption
-- **💾 Local Caching**: Offline data storage with sync capabilities
-- **🧠 Syni Integration**: Direct sync to Synheart's AI backend
+- **💾 Local Storage**: Encrypted offline data persistence
 
 ## 📦 Installation
 
@@ -78,7 +77,6 @@ final synheart = SynheartWear(
     enableLocalCaching: true,
     enableEncryption: true,
     streamInterval: Duration(seconds: 3),
-    syniEndpoint: 'https://api.synheart.ai/sync',
   ),
 );
 ```
@@ -118,7 +116,8 @@ All wearable data follows the **Synheart Data Schema v1.0**:
 | `readMetrics()` | Get current biometric snapshot |
 | `streamHR()` | Stream real-time heart rate |
 | `streamHRV()` | Stream HRV in configurable windows |
-| `syncToSyni()` | Upload data to Synheart backend |
+| `getCachedSessions()` | Retrieve cached wearable data |
+| `clearOldCache()` | Clean up old cached data |
 
 ### Permission Management
 
@@ -134,7 +133,7 @@ final status = synheart.getPermissionStatus();
 print('HR permission: ${status[PermissionType.heartRate]}');
 ```
 
-### Local Caching
+### Local Storage
 
 ```dart
 // Get cached sessions
@@ -190,8 +189,8 @@ await synheart.clearOldCache(maxAge: Duration(days: 30));
 │           │             │
 │           ▼             │
 ├───────────┬─────────────┤
-│   Syni Core Bridge      │
-│   (via API / Socket)    │
+│   Local Cache & Storage │
+│   (encrypted, offline)  │
 └─────────────────────────┘
 ```
 
@@ -208,8 +207,7 @@ The example demonstrates:
 - SDK initialization
 - Permission requests
 - Real-time data streaming
-- Cache management
-- Syni backend sync
+- Local storage management
 
 ## 🧪 Testing
 
@@ -232,7 +230,7 @@ Tests cover:
 |---------|------|-------------|
 | v0.1 | Core SDK | ✅ Apple Watch + Fitbit integration |
 | v0.2 | Real-time streaming | 🔄 HRV, HR over BLE |
-| v0.3 | Syni Core integration | 📋 Unified upload to backend |
+| v0.3 | Extended device support | 📋 Garmin, Whoop, Samsung integration |
 | v0.4 | SWIP integration | 📋 Add impact measurement hooks |
 | v1.0 | Public Release | 📋 Open standard SDK and docs |
 
@@ -259,7 +257,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- **Israel Goytom** - *Initial work* - [@israelgoytom](https://github.com/israelgoytom)
+- **Israel Goytom** - *Initial work* - [@isrugeek](https://github.com/isrugeek)
 - **Synheart AI Team** - *RFC Design & Architecture*
 
 ---

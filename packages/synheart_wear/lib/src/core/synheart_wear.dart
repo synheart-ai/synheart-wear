@@ -126,44 +126,6 @@ class SynheartWear {
     return _hrvStreamController!.stream;
   }
 
-  /// Sync data to Syni Core backend (RFC specification)
-  Future<void> syncToSyni({Map<String, Object?> context = const {}}) async {
-    if (config.syniEndpoint == null) {
-      throw SynheartWearError('Syni endpoint not configured');
-    }
-
-    try {
-      // Get cached sessions that haven't been synced
-      final sessions = await LocalCache.getCachedSessions();
-      final unsyncedSessions = sessions.where((s) => !s.isSynced).toList();
-
-      if (unsyncedSessions.isEmpty) {
-        return; // Nothing to sync
-      }
-
-      // TODO: Implement actual HTTP/gRPC sync to Syni Core
-      // For now, simulate successful sync
-      await _simulateSyniSync(unsyncedSessions, context);
-      
-      // Mark sessions as synced
-      for (final session in unsyncedSessions) {
-        final syncedSession = WearMetrics(
-          timestamp: session.timestamp,
-          deviceId: session.deviceId,
-          source: session.source,
-          metrics: session.metrics,
-          meta: {...session.meta, 'synced': true},
-        );
-        
-        if (config.enableLocalCaching) {
-          await LocalCache.storeSession(syncedSession);
-        }
-      }
-    } catch (e) {
-      throw NetworkError('Failed to sync to Syni: $e', e is Exception ? e : null);
-    }
-  }
-
   /// Get cached sessions for analysis
   Future<List<WearMetrics>> getCachedSessions({
     DateTime? startDate,
@@ -269,10 +231,4 @@ class SynheartWear {
     });
   }
 
-  /// Simulate Syni sync (placeholder implementation)
-  Future<void> _simulateSyniSync(List<WearMetrics> sessions, Map<String, Object?> context) async {
-    // TODO: Replace with actual HTTP/gRPC call to Syni Core
-    await Future.delayed(const Duration(milliseconds: 100));
-    print('Simulated sync of ${sessions.length} sessions to Syni Core');
-  }
 }

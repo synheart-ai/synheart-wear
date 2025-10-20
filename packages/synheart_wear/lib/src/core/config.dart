@@ -16,7 +16,6 @@ class SynheartWearConfig {
   final Duration hrvWindowSize;
   final bool enableLocalCaching;
   final bool enableEncryption;
-  final String? syniEndpoint;
   final Map<String, Object?> adapterConfig;
 
   const SynheartWearConfig({
@@ -28,7 +27,6 @@ class SynheartWearConfig {
     this.hrvWindowSize = const Duration(seconds: 5),
     this.enableLocalCaching = true,
     this.enableEncryption = true,
-    this.syniEndpoint,
     this.adapterConfig = const {},
   });
 
@@ -45,7 +43,7 @@ class SynheartWearConfig {
   );
 
   /// Create config for production
-  SynheartWearConfig.production({required String syniEndpoint}) : this(
+  SynheartWearConfig.production() : this(
     enabledAdapters: const {
       DeviceAdapter.appleHealthKit,
       DeviceAdapter.fitbit,
@@ -55,7 +53,6 @@ class SynheartWearConfig {
     },
     enableLocalCaching: true,
     enableEncryption: true,
-    syniEndpoint: syniEndpoint,
   );
 
   /// Check if a specific adapter is enabled
@@ -78,7 +75,6 @@ class SynheartWearConfig {
     Duration? hrvWindowSize,
     bool? enableLocalCaching,
     bool? enableEncryption,
-    String? syniEndpoint,
     Map<String, Object?>? adapterConfig,
   }) {
     return SynheartWearConfig(
@@ -87,7 +83,6 @@ class SynheartWearConfig {
       hrvWindowSize: hrvWindowSize ?? this.hrvWindowSize,
       enableLocalCaching: enableLocalCaching ?? this.enableLocalCaching,
       enableEncryption: enableEncryption ?? this.enableEncryption,
-      syniEndpoint: syniEndpoint ?? this.syniEndpoint,
       adapterConfig: adapterConfig ?? this.adapterConfig,
     );
   }

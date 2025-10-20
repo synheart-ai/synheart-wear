@@ -94,20 +94,20 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  Future<void> _syncToSyni() async {
+  Future<void> _clearOldCache() async {
     try {
       setState(() {
-        _status = 'Syncing to Syni...';
+        _status = 'Clearing old cache...';
       });
       
-      await _sdk.syncToSyni(context: {'app_version': '1.0.0'});
+      await _sdk.clearOldCache(maxAge: const Duration(days: 7));
       
       setState(() {
-        _status = 'Synced successfully';
+        _status = 'Cache cleared successfully';
       });
     } catch (e) {
       setState(() {
-        _status = 'Sync failed: $e';
+        _status = 'Cache clear failed: $e';
       });
     }
   }
@@ -152,8 +152,8 @@ class _MyAppState extends State<MyApp> {
                     child: const Text('Cache Stats'),
                   ),
                   ElevatedButton(
-                    onPressed: _syncToSyni,
-                    child: const Text('Sync to Syni'),
+                    onPressed: _clearOldCache,
+                    child: const Text('Clear Old Cache'),
                   ),
                 ],
               ),
