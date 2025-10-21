@@ -1,5 +1,5 @@
 import '../../synheart_wear.dart';
-import 'healthkit_platform.dart';
+import 'health_adapter.dart';
 import 'wear_adapter.dart';
 
 class AppleHealthKitAdapter implements WearAdapter {
@@ -11,18 +11,20 @@ class AppleHealthKitAdapter implements WearAdapter {
   Set<PermissionType> get supportedPermissions => const {
     PermissionType.heartRate,
     PermissionType.heartRateVariability,
+    PermissionType.steps,
+    PermissionType.calories,
   };
 
   @override
   Future<void> ensurePermissions() async {
     // Check if HealthKit is available
-    final isAvailable = await HealthKitPlatform.isAvailable();
+    final isAvailable = await HealthAdapter.isAvailable();
     if (!isAvailable) {
       throw DeviceUnavailableError('HealthKit is not available on this device');
     }
     
-    // Request permissions
-    final granted = await HealthKitPlatform.requestPermissions();
+    // Request permissions using health package
+    final granted = await HealthAdapter.requestPermissions(supportedPermissions);
     if (!granted) {
       throw PermissionDeniedError('HealthKit permissions were denied');
     }
@@ -31,28 +33,21 @@ class AppleHealthKitAdapter implements WearAdapter {
   @override
   Future<WearMetrics?> readSnapshot() async {
     try {
-      // Read real data from HealthKit
-      final hr = await HealthKitPlatform.getCurrentHeartRate();
-      final hrv = await HealthKitPlatform.getCurrentHRV();
+      // Read data using health package
+      final dataPoints = await HealthAdapter.readHealthData(
+        supportedPermissions,
+        startTime: DateTime.now().subtract(const Duration(minutes: 5)),
+        endTime: DateTime.now(),
+      );
       
-      // Return null if no data available
-      if (hr == null && hrv == null) {
-        return null;
-      }
-      
-      return WearMetrics(
-        timestamp: DateTime.now().toUtc(),
+      // Convert to WearMetrics
+      final metrics = HealthAdapter.convertToWearMetrics(
+        dataPoints,
         deviceId: 'applewatch_${DateTime.now().millisecondsSinceEpoch}',
         source: id,
-        metrics: {
-          if (hr != null) 'hr': hr,
-          if (hrv != null) 'hrv_rmssd': hrv,
-        },
-        meta: {
-          'battery': 0.8, // TODO: Get real battery level
-          'synced': true,
-        },
       );
+      
+      return metrics;
     } catch (e) {
       print('HealthKit read error: $e');
       return null;

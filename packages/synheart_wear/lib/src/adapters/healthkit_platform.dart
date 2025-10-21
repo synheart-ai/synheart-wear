@@ -1,60 +1,57 @@
 import 'dart:io';
-import 'package:flutter/services.dart';
+import 'package:synheart_wear/synheart_wear.dart';
+import 'health_adapter.dart';
 
 class HealthKitPlatform {
-  static const MethodChannel _channel =
-      MethodChannel('synheart_wear/healthkit');
-
-  /// Request HealthKit permissions for heart rate and HRV
+  /// Request permissions using health package (v13.2.1)
   static Future<bool> requestPermissions() async {
-    if (!Platform.isIOS) {
-      return false; // HealthKit only available on iOS
-    }
-
-    try {
-      final result = await _channel.invokeMethod('requestPermissions');
-      return result as bool;
-    } on PlatformException catch (e) {
-      print('HealthKit permission error: ${e.message}');
-      return false;
-    }
+    if (!Platform.isIOS) return false;
+    
+    final isAvailable = await HealthAdapter.isAvailable();
+    if (!isAvailable) return false;
+    
+    // Request basic permissions for heart rate and HRV
+    return await HealthAdapter.requestPermissions({
+      PermissionType.heartRate,
+      PermissionType.heartRateVariability,
+    });
   }
 
-  /// Check if HealthKit is available on this device
+  /// Check if HealthKit is available
   static Future<bool> isAvailable() async {
     if (!Platform.isIOS) return false;
-
-    try {
-      final result = await _channel.invokeMethod('isAvailable');
-      return result as bool;
-    } on PlatformException {
-      return false;
-    }
+    return await HealthAdapter.isAvailable();
   }
 
-  /// Read current heart rate from HealthKit
+  /// Get current heart rate
   static Future<double?> getCurrentHeartRate() async {
     if (!Platform.isIOS) return null;
-
-    try {
-      final result = await _channel.invokeMethod('getCurrentHeartRate');
-      return result as double?;
-    } on PlatformException catch (e) {
-      print('HealthKit HR error: ${e.message}');
-      return null;
-    }
+    
+    final dataPoints = await HealthAdapter.readHealthData({
+      PermissionType.heartRate,
+    });
+    
+    final metrics = HealthAdapter.convertToWearMetrics(dataPoints);
+    return metrics?.getMetric(MetricType.hr)?.toDouble();
   }
 
-  /// Read HRV data from HealthKit
+  /// Get current HRV
   static Future<double?> getCurrentHRV() async {
     if (!Platform.isIOS) return null;
-
-    try {
-      final result = await _channel.invokeMethod('getCurrentHRV');
-      return result as double?;
-    } on PlatformException catch (e) {
-      print('HealthKit HRV error: ${e.message}');
-      return null;
-    }
+    
+    final dataPoints = await HealthAdapter.readHealthData({
+      PermissionType.heartRateVariability,
+    });
+    
+    final metrics = HealthAdapter.convertToWearMetrics(dataPoints);
+    return metrics?.getMetric(MetricType.hrvSdnn)?.toDouble();
+  }
+  
+  /// Get permission status for specific types (v13.2.1 feature)
+  static Future<Map<PermissionType, bool>> getPermissionStatus(
+    Set<PermissionType> permissions,
+  ) async {
+    if (!Platform.isIOS) return {};
+    return await HealthAdapter.getPermissionStatus(permissions);
   }
 }
