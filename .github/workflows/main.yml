@@ -19,13 +19,28 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Install dependencies
+      - name: Install dependencies for package
+        working-directory: ./packages/synheart_wear
         run: flutter pub get
 
-      - name: Analyze
+      - name: Install dependencies for example
+        working-directory: ./examples/flutter_example
+        run: flutter pub get
+
+      - name: Analyze package
+        working-directory: ./packages/synheart_wear
         run: flutter analyze
 
-      - name: Run tests
+      - name: Run package tests
+        working-directory: ./packages/synheart_wear
+        run: flutter test
+
+      - name: Analyze example
+        working-directory: ./examples/flutter_example
+        run: flutter analyze
+
+      - name: Run example tests
+        working-directory: ./examples/flutter_example
         run: flutter test
 
   # Optional publishing step (disabled for now)
@@ -39,8 +54,11 @@ jobs:
   #     - uses: subosito/flutter-action@v2
   #       with:
   #         flutter-version: 'stable'
-  #     - run: flutter pub get
+  #     - name: Install dependencies
+  #       working-directory: ./packages/synheart_wear
+  #       run: flutter pub get
   #     - name: Publish to pub.dev
+  #       working-directory: ./packages/synheart_wear
   #       env:
   #         PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
   #       run: |
