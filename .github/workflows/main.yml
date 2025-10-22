@@ -1,0 +1,48 @@
+name: Flutter Package CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test
+
+  # Optional publishing step (disabled for now)
+  # publish:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main'
+  #
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: subosito/flutter-action@v2
+  #       with:
+  #         flutter-version: 'stable'
+  #     - run: flutter pub get
+  #     - name: Publish to pub.dev
+  #       env:
+  #         PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+  #       run: |
+  #         echo "$PUB_CREDENTIALS" > ~/.pub-cache/credentials.json
+  #         flutter pub publish --force
