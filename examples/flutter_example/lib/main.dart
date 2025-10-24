@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:synheart_wear/synheart_wear.dart';
 
@@ -23,6 +24,13 @@ class _MyAppState extends State<MyApp> {
   bool _isHrvStreaming = false;
   StreamSubscription<WearMetrics>? _hrSubscription;
   StreamSubscription<WearMetrics>? _hrvSubscription;
+
+  // Live metrics data
+  num? _currentHr;
+  num? _currentHrv;
+  num? _currentSteps;
+  num? _currentCalories;
+  String _lastUpdateTime = 'No data';
 
   final _sdk = SynheartWear(
     config: const SynheartWearConfig(
@@ -61,6 +69,7 @@ class _MyAppState extends State<MyApp> {
       // Check permission status after initialization
       await _checkPermissionStatus();
     } catch (e) {
+      log('$e');
       setState(() {
         _status = 'Initialization failed: $e';
       });
@@ -200,6 +209,7 @@ class _MyAppState extends State<MyApp> {
           _sdk.streamHR(interval: const Duration(seconds: 2)).listen(
         (metrics) {
           setState(() {
+            _updateMetrics(metrics);
             _last = 'HR Stream: ${metrics.toJson()}';
             _streamingStatus =
                 'HR streaming (${DateTime.now().toLocal().toString().substring(11, 19)})';
@@ -247,6 +257,7 @@ class _MyAppState extends State<MyApp> {
           _sdk.streamHRV(windowSize: const Duration(seconds: 5)).listen(
         (metrics) {
           setState(() {
+            _updateMetrics(metrics);
             _last = 'HRV Stream: ${metrics.toJson()}';
             _streamingStatus =
                 'HRV streaming (${DateTime.now().toLocal().toString().substring(11, 19)})';
@@ -597,29 +608,7 @@ class _MyAppState extends State<MyApp> {
           ),
           const SizedBox(height: 12),
           Expanded(
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: SingleChildScrollView(
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[50],
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey[300]!),
-                    ),
-                    child: Text(
-                      _last,
-                      style: const TextStyle(
-                        fontFamily: 'monospace',
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            child: _buildMetricsDisplay(),
           ),
         ],
       ),
@@ -698,6 +687,134 @@ class _MyAppState extends State<MyApp> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  /// Update live metrics data from stream
+  void _updateMetrics(WearMetrics metrics) {
+    _currentHr = metrics.getMetric(MetricType.hr);
+    _currentHrv = metrics.getMetric(MetricType.hrvRmssd);
+    _currentSteps = metrics.getMetric(MetricType.steps);
+    _currentCalories = metrics.getMetric(MetricType.calories);
+    _lastUpdateTime = DateTime.now().toLocal().toString().substring(11, 19);
+  }
+
+  /// Build metrics display with cards
+  Widget _buildMetricsDisplay() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // Last update time
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              decoration: BoxDecoration(
+                color: Colors.blue[50],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue[200]!),
+              ),
+              child: Text(
+                'Last Update: $_lastUpdateTime',
+                style: TextStyle(
+                  color: Colors.blue[700],
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Metrics grid
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 1.2,
+                children: [
+                  _buildMetricCard(
+                    'Heart Rate',
+                    _currentHr?.toStringAsFixed(0) ?? '—',
+                    'BPM',
+                    Colors.red,
+                    Icons.favorite,
+                  ),
+                  _buildMetricCard(
+                    'HRV',
+                    _currentHrv?.toStringAsFixed(1) ?? '—',
+                    'ms',
+                    Colors.purple,
+                    Icons.analytics,
+                  ),
+                  _buildMetricCard(
+                    'Steps',
+                    _currentSteps?.toStringAsFixed(0) ?? '—',
+                    'steps',
+                    Colors.green,
+                    Icons.directions_walk,
+                  ),
+                  _buildMetricCard(
+                    'Calories',
+                    _currentCalories?.toStringAsFixed(0) ?? '—',
+                    'kcal',
+                    Colors.orange,
+                    Icons.local_fire_department,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Build individual metric card
+  Widget _buildMetricCard(
+      String title, String value, String unit, Color color, IconData icon) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: 24),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: TextStyle(
+              color: color,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              color: color,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            unit,
+            style: TextStyle(
+              color: color.withValues(alpha: 0.7),
+              fontSize: 10,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

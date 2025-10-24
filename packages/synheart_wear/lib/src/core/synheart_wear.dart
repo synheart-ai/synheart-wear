@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/foundation.dart';
 
 import '../adapters/wear_adapter.dart';
@@ -51,7 +52,7 @@ class SynheartWear {
   }
 
   /// Read current metrics from all enabled adapters
-  Future<WearMetrics> readMetrics() async {
+  Future<WearMetrics> readMetrics({bool isRealTime = false}) async {
     if (!_initialized) {
       await initialize();
     }
@@ -64,7 +65,7 @@ class SynheartWear {
       final adapterData = <WearMetrics?>[];
       for (final adapter in _enabledAdapters()) {
         try {
-          final data = await adapter.readSnapshot();
+          final data = await adapter.readSnapshot(isRealTime: isRealTime);
           adapterData.add(data);
         } catch (e) {
           // Keep non-fatal, tag by adapter id
@@ -72,11 +73,14 @@ class SynheartWear {
         }
       }
 
+      log('Read data from ${adapterData.first!} adapters');
+
       // Normalize and merge data
       final mergedData = _normalizer.mergeSnapshots(adapterData);
 
       // Validate data quality
       if (!_normalizer.validateMetrics(mergedData)) {
+        log('Invalid metrics data: $mergedData');
         throw SynheartWearError('Invalid metrics data received');
       }
 
@@ -226,7 +230,7 @@ class SynheartWear {
       }
 
       try {
-        final metrics = await readMetrics();
+        final metrics = await readMetrics(isRealTime: true);
         _hrStreamController?.add(metrics);
       } catch (e) {
         _hrStreamController?.addError(e);
@@ -246,7 +250,7 @@ class SynheartWear {
       }
 
       try {
-        final metrics = await readMetrics();
+        final metrics = await readMetrics(isRealTime: true);
         final hrvData = metrics.getMetric(MetricType.hrvRmssd);
 
         if (hrvData != null) {

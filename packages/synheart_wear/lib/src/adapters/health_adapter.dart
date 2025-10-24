@@ -92,16 +92,20 @@ class HealthAdapter {
     if (healthTypes.isEmpty) return [];
 
     final start =
-        startTime ?? DateTime.now().subtract(const Duration(minutes: 5));
+        startTime ?? DateTime.now().subtract(const Duration(seconds: 2));
     final end = endTime ?? DateTime.now();
 
     try {
       await _ensureConfigured();
-      return await _health.getHealthDataFromTypes(
+      final data = await _health.getHealthDataFromTypes(
         startTime: start,
         endTime: end,
         types: healthTypes,
       );
+
+      //print("Data: $data");
+
+      return data;
     } catch (e) {
       print('Health data read error: $e');
       return [];
