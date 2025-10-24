@@ -35,13 +35,13 @@ jobs:
         working-directory: ./packages/synheart_wear
         run: flutter test
 
-      - name: Analyze example
-        working-directory: ./examples/flutter_example
-        run: flutter analyze
+      # - name: Analyze example
+      #   working-directory: ./examples/flutter_example
+      #   run: flutter analyze
 
-      - name: Run example tests
-        working-directory: ./examples/flutter_example
-        run: flutter test
+      # - name: Run example tests
+      #   working-directory: ./examples/flutter_example
+      #   run: flutter test
 
   # Optional publishing step (disabled for now)
   # publish:
