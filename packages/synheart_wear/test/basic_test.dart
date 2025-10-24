@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:synheart_wear/src/adapters/wear_adapter.dart';
 import 'package:synheart_wear/synheart_wear.dart';
 
 void main() {
@@ -98,7 +97,7 @@ void main() {
   //   });
   // });
 
-  // Add this test to test/basic_test.dart
+  Add this test to test/basic_test.dart
   test('stream timers start/stop based on subscribers', () async {
     // Create a simple test
     final sdk = SynheartWear();
