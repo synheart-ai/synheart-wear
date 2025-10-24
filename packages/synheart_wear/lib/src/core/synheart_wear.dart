@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/foundation.dart';
 
 import '../adapters/wear_adapter.dart';
@@ -51,7 +52,7 @@ class SynheartWear {
   }
 
   /// Read current metrics from all enabled adapters
-  Future<WearMetrics> readMetrics() async {
+  Future<WearMetrics> readMetrics({bool isRealTime = false}) async {
     if (!_initialized) {
       await initialize();
     }
@@ -64,7 +65,7 @@ class SynheartWear {
       final adapterData = <WearMetrics?>[];
       for (final adapter in _enabledAdapters()) {
         try {
-          final data = await adapter.readSnapshot();
+          final data = await adapter.readSnapshot(isRealTime: isRealTime);
           adapterData.add(data);
         } catch (e) {
           // Keep non-fatal, tag by adapter id
@@ -72,17 +73,21 @@ class SynheartWear {
         }
       }
 
+      log('Read data from ${adapterData.first!} adapters');
+
       // Normalize and merge data
       final mergedData = _normalizer.mergeSnapshots(adapterData);
 
       // Validate data quality
       if (!_normalizer.validateMetrics(mergedData)) {
+        log('Invalid metrics data: $mergedData');
         throw SynheartWearError('Invalid metrics data received');
       }
 
       // Cache data if enabled
       if (config.enableLocalCaching) {
-        await LocalCache.storeSession(mergedData);
+        await LocalCache.storeSession(mergedData,
+            enableEncryption: config.enableEncryption);
       }
 
       return mergedData;
@@ -95,28 +100,28 @@ class SynheartWear {
   /// Stream real-time heart rate data
   Stream<WearMetrics> streamHR({Duration? interval}) {
     final actualInterval = interval ?? config.streamInterval;
-  
+
     _hrStreamController ??= StreamController<WearMetrics>.broadcast();
-    
+
     // Start timer when first listener subscribes
     if (!_hrStreamController!.hasListener) {
       _startStreaming(actualInterval);
     }
-    
+
     return _hrStreamController!.stream;
   }
 
   /// Stream HRV data in configurable windows (RFC specification)
   Stream<WearMetrics> streamHRV({Duration? windowSize}) {
     final actualWindowSize = windowSize ?? config.hrvWindowSize;
-  
+
     _hrvStreamController ??= StreamController<WearMetrics>.broadcast();
-    
+
     // Start timer when first listener subscribes
     if (!_hrvStreamController!.hasListener) {
       _startHrvStreaming(actualWindowSize);
     }
-    
+
     return _hrvStreamController!.stream;
   }
 
@@ -223,9 +228,9 @@ class SynheartWear {
         _streamTimer = null;
         return;
       }
-      
+
       try {
-        final metrics = await readMetrics();
+        final metrics = await readMetrics(isRealTime: true);
         _hrStreamController?.add(metrics);
       } catch (e) {
         _hrStreamController?.addError(e);
@@ -243,11 +248,11 @@ class SynheartWear {
         _hrvTimer = null;
         return;
       }
-      
+
       try {
-        final metrics = await readMetrics();
+        final metrics = await readMetrics(isRealTime: true);
         final hrvData = metrics.getMetric(MetricType.hrvRmssd);
-        
+
         if (hrvData != null) {
           _hrvStreamController?.add(metrics);
         }

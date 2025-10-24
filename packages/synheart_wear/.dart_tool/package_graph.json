@@ -8,11 +8,11 @@
       "version": "0.1.0",
       "dependencies": [
         "collection",
+        "encrypt",
         "flutter",
         "health",
         "path_provider",
         "platform",
-        "plugin_platform_interface",
         "uuid"
       ],
       "devDependencies": [
@@ -44,9 +44,32 @@
       ]
     },
     {
+      "name": "encrypt",
+      "version": "5.0.3",
+      "dependencies": [
+        "args",
+        "asn1lib",
+        "clock",
+        "collection",
+        "crypto",
+        "pointycastle"
+      ]
+    },
+    {
       "name": "platform",
       "version": "3.1.6",
       "dependencies": []
+    },
+    {
+      "name": "health",
+      "version": "13.2.1",
+      "dependencies": [
+        "carp_serializable",
+        "device_info_plus",
+        "flutter",
+        "intl",
+        "json_annotation"
+      ]
     },
     {
       "name": "path_provider",
@@ -74,13 +97,6 @@
       "name": "collection",
       "version": "1.19.1",
       "dependencies": []
-    },
-    {
-      "name": "plugin_platform_interface",
-      "version": "2.1.8",
-      "dependencies": [
-        "meta"
-      ]
     },
     {
       "name": "flutter",
@@ -174,6 +190,72 @@
       ]
     },
     {
+      "name": "pointycastle",
+      "version": "3.9.1",
+      "dependencies": [
+        "collection",
+        "convert",
+        "js"
+      ]
+    },
+    {
+      "name": "crypto",
+      "version": "3.0.6",
+      "dependencies": [
+        "typed_data"
+      ]
+    },
+    {
+      "name": "asn1lib",
+      "version": "1.6.5",
+      "dependencies": []
+    },
+    {
+      "name": "args",
+      "version": "2.7.0",
+      "dependencies": []
+    },
+    {
+      "name": "carp_serializable",
+      "version": "2.0.1",
+      "dependencies": [
+        "flutter",
+        "json_annotation",
+        "meta"
+      ]
+    },
+    {
+      "name": "json_annotation",
+      "version": "4.9.0",
+      "dependencies": [
+        "meta"
+      ]
+    },
+    {
+      "name": "device_info_plus",
+      "version": "12.2.0",
+      "dependencies": [
+        "device_info_plus_platform_interface",
+        "ffi",
+        "file",
+        "flutter",
+        "flutter_web_plugins",
+        "meta",
+        "web",
+        "win32",
+        "win32_registry"
+      ]
+    },
+    {
+      "name": "intl",
+      "version": "0.19.0",
+      "dependencies": [
+        "clock",
+        "meta",
+        "path"
+      ]
+    },
+    {
       "name": "path_provider_windows",
       "version": "2.3.0",
       "dependencies": [
@@ -228,13 +310,6 @@
       "name": "sprintf",
       "version": "7.0.0",
       "dependencies": []
-    },
-    {
-      "name": "crypto",
-      "version": "3.0.6",
-      "dependencies": [
-        "typed_data"
-      ]
     },
     {
       "name": "sky_engine",
@@ -311,16 +386,15 @@
       ]
     },
     {
-      "name": "ffi",
-      "version": "2.1.4",
+      "name": "js",
+      "version": "0.7.2",
       "dependencies": []
     },
     {
-      "name": "xdg_directories",
-      "version": "1.1.0",
+      "name": "convert",
+      "version": "3.1.2",
       "dependencies": [
-        "meta",
-        "path"
+        "typed_data"
       ]
     },
     {
@@ -331,60 +405,25 @@
       ]
     },
     {
-      "name": "vm_service",
-      "version": "15.0.2",
-      "dependencies": []
-    },
-    {
-      "name": "health",
-      "version": "10.2.0",
+      "name": "win32_registry",
+      "version": "2.1.0",
       "dependencies": [
-        "carp_serializable",
-        "device_info_plus",
-        "flutter",
-        "intl",
-        "json_annotation"
-      ]
-    },
-    {
-      "name": "json_annotation",
-      "version": "4.9.0",
-      "dependencies": [
-        "meta"
-      ]
-    },
-    {
-      "name": "intl",
-      "version": "0.19.0",
-      "dependencies": [
-        "clock",
-        "meta",
-        "path"
-      ]
-    },
-    {
-      "name": "carp_serializable",
-      "version": "1.2.0",
-      "dependencies": [
-        "flutter",
-        "json_annotation",
-        "meta"
-      ]
-    },
-    {
-      "name": "device_info_plus",
-      "version": "10.1.2",
-      "dependencies": [
-        "device_info_plus_platform_interface",
         "ffi",
-        "file",
-        "flutter",
-        "flutter_web_plugins",
         "meta",
-        "web",
-        "win32",
-        "win32_registry"
+        "win32"
       ]
+    },
+    {
+      "name": "win32",
+      "version": "5.15.0",
+      "dependencies": [
+        "ffi"
+      ]
+    },
+    {
+      "name": "web",
+      "version": "1.1.1",
+      "dependencies": []
     },
     {
       "name": "flutter_web_plugins",
@@ -402,6 +441,11 @@
       ]
     },
     {
+      "name": "ffi",
+      "version": "2.1.4",
+      "dependencies": []
+    },
+    {
       "name": "device_info_plus_platform_interface",
       "version": "7.0.3",
       "dependencies": [
@@ -411,24 +455,24 @@
       ]
     },
     {
-      "name": "web",
-      "version": "1.1.1",
+      "name": "plugin_platform_interface",
+      "version": "2.1.8",
+      "dependencies": [
+        "meta"
+      ]
+    },
+    {
+      "name": "xdg_directories",
+      "version": "1.1.0",
+      "dependencies": [
+        "meta",
+        "path"
+      ]
+    },
+    {
+      "name": "vm_service",
+      "version": "15.0.2",
       "dependencies": []
-    },
-    {
-      "name": "win32_registry",
-      "version": "1.1.5",
-      "dependencies": [
-        "ffi",
-        "win32"
-      ]
-    },
-    {
-      "name": "win32",
-      "version": "5.15.0",
-      "dependencies": [
-        "ffi"
-      ]
     }
   ],
   "configVersion": 1

@@ -163,10 +163,11 @@ await synheart.clearOldCache(maxAge: Duration(days: 30));
 ## 🔒 Privacy & Security
 
 - **Consent-First Design**: Users must explicitly approve data access
-- **Data Encryption**: AES-256 encryption for local storage
+- **Data Encryption**: AES-256-CBC encryption for local storage
+- **Key Management**: Automatic key generation and rotation
 - **No Persistent IDs**: Anonymized UUIDs for experiments
 - **Compliant**: Follows Synheart Data Governance Policy
-- **Right to Forget**: Users can revoke permissions anytime
+- **Right to Forget**: Users can revoke permissions and delete encrypted data
 
 ## 🏗️ Architecture
 

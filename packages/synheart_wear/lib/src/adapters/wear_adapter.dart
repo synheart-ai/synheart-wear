@@ -6,5 +6,5 @@ abstract class WearAdapter {
   Set<PermissionType> get supportedPermissions;
 
   Future<void> ensurePermissions();
-  Future<WearMetrics?> readSnapshot();
+  Future<WearMetrics?> readSnapshot({bool isRealTime = true});
 }
