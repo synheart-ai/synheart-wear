@@ -1,0 +1,48 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "flutter_example",
+            "cwd": "examples/flutter_example",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "flutter_example (profile mode)",
+            "cwd": "examples/flutter_example",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "flutter_example (release mode)",
+            "cwd": "examples/flutter_example",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "synheart_wear",
+            "cwd": "packages/synheart_wear",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "synheart_wear (profile mode)",
+            "cwd": "packages/synheart_wear",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "synheart_wear (release mode)",
+            "cwd": "packages/synheart_wear",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

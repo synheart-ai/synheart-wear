@@ -13,6 +13,7 @@ dependencies:
   path_provider: ^2.1.4
   health: ^13.2.1
   platform: ^3.1.6
+  encrypt: ^5.0.1
   # Platform bridges (add as needed)
   # health: ^9.0.0
   # google_fit: any

@@ -15,6 +15,7 @@ class SynheartWearConfig {
   final bool enableLocalCaching;
   final bool enableEncryption;
   final Map<String, Object?> adapterConfig;
+  final String? encryptionKeyPath;
 
   const SynheartWearConfig({
     this.enabledAdapters = const {
@@ -25,33 +26,37 @@ class SynheartWearConfig {
     this.hrvWindowSize = const Duration(seconds: 5),
     this.enableLocalCaching = true,
     this.enableEncryption = true,
+    this.encryptionKeyPath,
     this.adapterConfig = const {},
   });
 
   /// Create config with only specific adapters enabled
-  SynheartWearConfig.withAdapters(Set<DeviceAdapter> adapters) : this(
-    enabledAdapters: adapters,
-  );
+  SynheartWearConfig.withAdapters(Set<DeviceAdapter> adapters)
+      : this(
+          enabledAdapters: adapters,
+        );
 
   /// Create config for development/testing
-  SynheartWearConfig.development() : this(
-    enabledAdapters: const {DeviceAdapter.appleHealthKit},
-    enableLocalCaching: false,
-    enableEncryption: false,
-  );
+  SynheartWearConfig.development()
+      : this(
+          enabledAdapters: const {DeviceAdapter.appleHealthKit},
+          enableLocalCaching: false,
+          enableEncryption: false,
+        );
 
   /// Create config for production
-  SynheartWearConfig.production() : this(
-    enabledAdapters: const {
-      DeviceAdapter.appleHealthKit,
-      DeviceAdapter.fitbit,
-      DeviceAdapter.garmin,
-      DeviceAdapter.whoop,
-      DeviceAdapter.samsungHealth,
-    },
-    enableLocalCaching: true,
-    enableEncryption: true,
-  );
+  SynheartWearConfig.production()
+      : this(
+          enabledAdapters: const {
+            DeviceAdapter.appleHealthKit,
+            DeviceAdapter.fitbit,
+            DeviceAdapter.garmin,
+            DeviceAdapter.whoop,
+            DeviceAdapter.samsungHealth,
+          },
+          enableLocalCaching: true,
+          enableEncryption: true,
+        );
 
   /// Check if a specific adapter is enabled
   bool isAdapterEnabled(DeviceAdapter adapter) {

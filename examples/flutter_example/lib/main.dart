@@ -18,6 +18,7 @@ class _MyAppState extends State<MyApp> {
   String _status = 'Not initialized';
   String _permissionStatus = 'Unknown';
   String _streamingStatus = 'Not streaming';
+  String _encryptionStatus = 'Unknown';
   bool _isHrStreaming = false;
   bool _isHrvStreaming = false;
   StreamSubscription<WearMetrics>? _hrSubscription;
@@ -75,6 +76,20 @@ class _MyAppState extends State<MyApp> {
     } catch (e) {
       setState(() {
         _permissionStatus = 'Error checking permissions: $e';
+      });
+    }
+  }
+
+  Future<void> _checkEncryptionStatus() async {
+    try {
+      final stats = await _sdk.getCacheStats();
+      setState(() {
+        _encryptionStatus =
+            stats['encryption_enabled'] == true ? 'Enabled' : 'Disabled';
+      });
+    } catch (e) {
+      setState(() {
+        _encryptionStatus = 'Error: $e';
       });
     }
   }
@@ -275,153 +290,410 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Synheart Wear Example'),
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+      home: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Synheart Wear Example'),
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
+            bottom: const TabBar(
+              indicatorColor: Colors.white,
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.white70,
+              tabs: [
+                Tab(icon: Icon(Icons.dashboard), text: 'Dashboard'),
+                Tab(icon: Icon(Icons.favorite), text: 'Health Data'),
+                Tab(icon: Icon(Icons.stream), text: 'Streaming'),
+              ],
+            ),
+          ),
+          body: TabBarView(
             children: [
-              // Status Section
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Status: $_status',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 8),
-                      Text('Permissions: $_permissionStatus'),
-                      const SizedBox(height: 8),
-                      Text('Streaming: $_streamingStatus',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: _isHrStreaming || _isHrvStreaming
-                                ? Colors.green
-                                : Colors.grey,
-                          )),
-                    ],
-                  ),
+              _buildDashboardTab(),
+              _buildHealthDataTab(),
+              _buildStreamingTab(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDashboardTab() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          // Status Cards
+          Row(
+            children: [
+              Expanded(
+                child: _buildStatusCard(
+                  'SDK Status',
+                  _status,
+                  _status.contains('successfully')
+                      ? Colors.green
+                      : Colors.orange,
+                  Icons.check_circle,
                 ),
               ),
-              const SizedBox(height: 16),
-
-              // Data Section
-              const Text('Last Health Data:',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
+              const SizedBox(width: 12),
               Expanded(
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: SingleChildScrollView(
-                      child: Text(
-                        _last,
-                        style: const TextStyle(
-                            fontFamily: 'monospace', fontSize: 12),
+                child: _buildStatusCard(
+                  'Permissions',
+                  _permissionStatus,
+                  _permissionStatus.contains('granted')
+                      ? Colors.green
+                      : Colors.red,
+                  Icons.security,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildStatusCard(
+                  'Encryption',
+                  _encryptionStatus,
+                  _encryptionStatus == 'Enabled' ? Colors.green : Colors.grey,
+                  Icons.lock,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildStatusCard(
+                  'Streaming',
+                  _streamingStatus,
+                  _isHrStreaming || _isHrvStreaming
+                      ? Colors.green
+                      : Colors.grey,
+                  Icons.stream,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // Quick Actions
+          const Text(
+            'Quick Actions',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _buildActionButton(
+                'Read Health Data',
+                Icons.favorite,
+                Colors.red,
+                _read,
+              ),
+              _buildActionButton(
+                'Request Permissions',
+                Icons.security,
+                Colors.orange,
+                _requestPermissions,
+              ),
+              _buildActionButton(
+                'Check Encryption',
+                Icons.lock,
+                Colors.indigo,
+                _checkEncryptionStatus,
+              ),
+              _buildActionButton(
+                'Test HealthKit',
+                Icons.health_and_safety,
+                Colors.green,
+                _testHealthKit,
+              ),
+              _buildActionButton(
+                'Cache Stats',
+                Icons.storage,
+                Colors.blue,
+                _getCacheStats,
+              ),
+              _buildActionButton(
+                'Clear Cache',
+                Icons.clear,
+                Colors.grey,
+                _clearOldCache,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHealthDataTab() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Health Data',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: Card(
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Latest Metrics',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                          onPressed: _read,
+                          icon: const Icon(Icons.refresh),
+                          tooltip: 'Refresh Data',
+                        ),
+                      ],
+                    ),
+                    const Divider(),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey[300]!),
+                          ),
+                          child: Text(
+                            _last,
+                            style: const TextStyle(
+                              fontFamily: 'monospace',
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStreamingTab() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Real-Time Streaming',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+
+          // Streaming Status
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Icon(
+                    _isHrStreaming || _isHrvStreaming
+                        ? Icons.play_circle
+                        : Icons.pause_circle,
+                    color: _isHrStreaming || _isHrvStreaming
+                        ? Colors.green
+                        : Colors.grey,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      _streamingStatus,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: _isHrStreaming || _isHrvStreaming
+                            ? Colors.green
+                            : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Streaming Controls
+          const Text(
+            'Stream Controls',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+
+          Row(
+            children: [
+              Expanded(
+                child: _buildStreamButton(
+                  'Heart Rate',
+                  _isHrStreaming ? 'Stop HR' : 'Start HR',
+                  _isHrStreaming ? Icons.stop : Icons.play_arrow,
+                  _isHrStreaming ? Colors.red : Colors.pink,
+                  _startHrStreaming,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildStreamButton(
+                  'Heart Rate Variability',
+                  _isHrvStreaming ? 'Stop HRV' : 'Start HRV',
+                  _isHrvStreaming ? Icons.stop : Icons.play_arrow,
+                  _isHrvStreaming ? Colors.red : Colors.purple,
+                  _startHrvStreaming,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: _stopAllStreaming,
+              icon: const Icon(Icons.stop_circle, color: Colors.white),
+              label: const Text(
+                'Stop All Streams',
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red[800],
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Live Data Display
+          const Text(
+            'Live Data',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: SingleChildScrollView(
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey[300]!),
+                    ),
+                    child: Text(
+                      _last,
+                      style: const TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 12,
                       ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-              // Action Buttons
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: _read,
-                    icon: const Icon(Icons.favorite, color: Colors.white),
-                    label: const Text('Read Health Data',
-                        style: TextStyle(color: Colors.white)),
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: _requestPermissions,
-                    icon: const Icon(Icons.security, color: Colors.white),
-                    label: const Text('Request Permissions',
-                        style: TextStyle(color: Colors.white)),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: _testHealthKit,
-                    icon: const Icon(Icons.health_and_safety,
-                        color: Colors.white),
-                    label: const Text('Test HealthKit',
-                        style: TextStyle(color: Colors.white)),
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: _getCacheStats,
-                    icon: const Icon(Icons.storage, color: Colors.white),
-                    label: const Text('Cache Stats',
-                        style: TextStyle(color: Colors.white)),
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: _clearOldCache,
-                    icon: const Icon(Icons.clear, color: Colors.white),
-                    label: const Text('Clear Cache',
-                        style: TextStyle(color: Colors.white)),
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
+  Widget _buildStatusCard(
+      String title, String status, Color color, IconData icon) {
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 24),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              status,
+              style: TextStyle(color: color, fontSize: 11),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-              // Streaming Section
-              const Text('Real-Time Streaming:',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+  Widget _buildActionButton(
+      String label, IconData icon, Color color, VoidCallback onPressed) {
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, color: Colors.white, size: 16),
+      label: Text(
+        label,
+        style: const TextStyle(color: Colors.white, fontSize: 12),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      ),
+    );
+  }
+
+  Widget _buildStreamButton(String title, String action, IconData icon,
+      Color color, VoidCallback onPressed) {
+    return Card(
+      elevation: 2,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Icon(icon, color: color, size: 32),
               const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: _startHrStreaming,
-                    icon: Icon(_isHrStreaming ? Icons.stop : Icons.play_arrow,
-                        color: Colors.white),
-                    label: Text(
-                        _isHrStreaming ? 'Stop HR Stream' : 'Start HR Stream',
-                        style: const TextStyle(color: Colors.white)),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            _isHrStreaming ? Colors.red : Colors.pink),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: _startHrvStreaming,
-                    icon: Icon(_isHrvStreaming ? Icons.stop : Icons.play_arrow,
-                        color: Colors.white),
-                    label: Text(
-                        _isHrvStreaming
-                            ? 'Stop HRV Stream'
-                            : 'Start HRV Stream',
-                        style: const TextStyle(color: Colors.white)),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            _isHrvStreaming ? Colors.red : Colors.purple),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: _stopAllStreaming,
-                    icon: const Icon(Icons.stop_circle, color: Colors.white),
-                    label: const Text('Stop All Streams',
-                        style: TextStyle(color: Colors.white)),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red[800]),
-                  ),
-                ],
+              Text(
+                title,
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                action,
+                style: TextStyle(color: color, fontSize: 10),
+                textAlign: TextAlign.center,
               ),
             ],
           ),

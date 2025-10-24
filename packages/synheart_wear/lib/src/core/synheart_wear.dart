@@ -82,7 +82,8 @@ class SynheartWear {
 
       // Cache data if enabled
       if (config.enableLocalCaching) {
-        await LocalCache.storeSession(mergedData);
+        await LocalCache.storeSession(mergedData,
+            enableEncryption: config.enableEncryption);
       }
 
       return mergedData;
@@ -95,28 +96,28 @@ class SynheartWear {
   /// Stream real-time heart rate data
   Stream<WearMetrics> streamHR({Duration? interval}) {
     final actualInterval = interval ?? config.streamInterval;
-  
+
     _hrStreamController ??= StreamController<WearMetrics>.broadcast();
-    
+
     // Start timer when first listener subscribes
     if (!_hrStreamController!.hasListener) {
       _startStreaming(actualInterval);
     }
-    
+
     return _hrStreamController!.stream;
   }
 
   /// Stream HRV data in configurable windows (RFC specification)
   Stream<WearMetrics> streamHRV({Duration? windowSize}) {
     final actualWindowSize = windowSize ?? config.hrvWindowSize;
-  
+
     _hrvStreamController ??= StreamController<WearMetrics>.broadcast();
-    
+
     // Start timer when first listener subscribes
     if (!_hrvStreamController!.hasListener) {
       _startHrvStreaming(actualWindowSize);
     }
-    
+
     return _hrvStreamController!.stream;
   }
 
@@ -223,7 +224,7 @@ class SynheartWear {
         _streamTimer = null;
         return;
       }
-      
+
       try {
         final metrics = await readMetrics();
         _hrStreamController?.add(metrics);
@@ -243,11 +244,11 @@ class SynheartWear {
         _hrvTimer = null;
         return;
       }
-      
+
       try {
         final metrics = await readMetrics();
         final hrvData = metrics.getMetric(MetricType.hrvRmssd);
-        
+
         if (hrvData != null) {
           _hrvStreamController?.add(metrics);
         }
