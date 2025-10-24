@@ -1,5 +1,3 @@
-import '../core/models.dart';
-
 /// Supported device adapters
 enum DeviceAdapter {
   appleHealthKit,
