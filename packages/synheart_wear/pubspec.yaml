@@ -8,10 +8,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  plugin_platform_interface: ^2.1.8
   collection: ^1.18.0
   uuid: ^4.4.0
   path_provider: ^2.1.4
+  health: ^13.2.1
+  platform: ^3.1.6
   # Platform bridges (add as needed)
   # health: ^9.0.0
   # google_fit: any
@@ -20,10 +21,5 @@ dev_dependencies:
     sdk: flutter
   very_good_analysis: ^6.0.0
 flutter:
-  plugin:
-    platforms:
-      android:
-        package: ai.synheart.wear
-        pluginClass: SynheartWearPlugin
-      ios:
-        pluginClass: SynheartWearPlugin
+  # This is now a pure Dart package that uses the health plugin
+  # No platform-specific code needed as we delegate to health package

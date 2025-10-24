@@ -1,5 +1,5 @@
 import '../../synheart_wear.dart';
-import '../core/models.dart';
+import 'health_adapter.dart';
 import 'wear_adapter.dart';
 
 class AppleHealthKitAdapter implements WearAdapter {
@@ -11,24 +11,46 @@ class AppleHealthKitAdapter implements WearAdapter {
   Set<PermissionType> get supportedPermissions => const {
     PermissionType.heartRate,
     PermissionType.heartRateVariability,
+    PermissionType.steps,
+    PermissionType.calories,
   };
 
+  @override
   Future<void> ensurePermissions() async {
-    // TODO: Implement HealthKit permission requests via platform channel.
+    // Check if HealthKit is available
+    final isAvailable = await HealthAdapter.isAvailable();
+    if (!isAvailable) {
+      throw DeviceUnavailableError('HealthKit is not available on this device');
+    }
+    
+    // Request permissions using health package
+    final granted = await HealthAdapter.requestPermissions(supportedPermissions);
+    if (!granted) {
+      throw PermissionDeniedError('HealthKit permissions were denied');
+    }
   }
 
+  @override
   Future<WearMetrics?> readSnapshot() async {
-    // TODO: Read HR, HRV, steps via HealthKit bridge.
-    return WearMetrics(
-      timestamp: DateTime.now().toUtc(),
-      deviceId: 'applewatch_demo',
-      source: 'apple_healthkit',
-      metrics: {
-        'hr': 72,
-        'hrv_rmssd': 45,
-        'steps': 1000,
-      },
-      meta: {'battery': 0.8},
-    );
+    try {
+      // Read data using health package
+      final dataPoints = await HealthAdapter.readHealthData(
+        supportedPermissions,
+        startTime: DateTime.now().subtract(const Duration(minutes: 5)),
+        endTime: DateTime.now(),
+      );
+      
+      // Convert to WearMetrics
+      final metrics = HealthAdapter.convertToWearMetrics(
+        dataPoints,
+        deviceId: 'applewatch_${DateTime.now().millisecondsSinceEpoch}',
+        source: id,
+      );
+      
+      return metrics;
+    } catch (e) {
+      print('HealthKit read error: $e');
+      return null;
+    }
   }
 }
