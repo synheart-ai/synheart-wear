@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:synheart_wear/synheart_wear.dart';
 
@@ -16,6 +17,12 @@ class _MyAppState extends State<MyApp> {
   String _last = '—';
   String _status = 'Not initialized';
   String _permissionStatus = 'Unknown';
+  String _streamingStatus = 'Not streaming';
+  bool _isHrStreaming = false;
+  bool _isHrvStreaming = false;
+  StreamSubscription<WearMetrics>? _hrSubscription;
+  StreamSubscription<WearMetrics>? _hrvSubscription;
+
   final _sdk = SynheartWear(
     config: const SynheartWearConfig(
       enableLocalCaching: true,
@@ -32,6 +39,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
+    _hrSubscription?.cancel();
+    _hrvSubscription?.cancel();
     _sdk.dispose();
     super.dispose();
   }
@@ -161,6 +170,108 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  Future<void> _startHrStreaming() async {
+    try {
+      if (_isHrStreaming) {
+        await _stopHrStreaming();
+        return;
+      }
+
+      setState(() {
+        _streamingStatus = 'Starting HR stream...';
+      });
+
+      _hrSubscription =
+          _sdk.streamHR(interval: const Duration(seconds: 2)).listen(
+        (metrics) {
+          setState(() {
+            _last = 'HR Stream: ${metrics.toJson()}';
+            _streamingStatus =
+                'HR streaming (${DateTime.now().toLocal().toString().substring(11, 19)})';
+          });
+        },
+        onError: (error) {
+          setState(() {
+            _streamingStatus = 'HR stream error: $error';
+          });
+        },
+      );
+
+      setState(() {
+        _isHrStreaming = true;
+        _streamingStatus = 'HR streaming active';
+      });
+    } catch (e) {
+      setState(() {
+        _streamingStatus = 'Failed to start HR stream: $e';
+      });
+    }
+  }
+
+  Future<void> _stopHrStreaming() async {
+    await _hrSubscription?.cancel();
+    _hrSubscription = null;
+    setState(() {
+      _isHrStreaming = false;
+      _streamingStatus = 'HR stream stopped';
+    });
+  }
+
+  Future<void> _startHrvStreaming() async {
+    try {
+      if (_isHrvStreaming) {
+        await _stopHrvStreaming();
+        return;
+      }
+
+      setState(() {
+        _streamingStatus = 'Starting HRV stream...';
+      });
+
+      _hrvSubscription =
+          _sdk.streamHRV(windowSize: const Duration(seconds: 5)).listen(
+        (metrics) {
+          setState(() {
+            _last = 'HRV Stream: ${metrics.toJson()}';
+            _streamingStatus =
+                'HRV streaming (${DateTime.now().toLocal().toString().substring(11, 19)})';
+          });
+        },
+        onError: (error) {
+          setState(() {
+            _streamingStatus = 'HRV stream error: $error';
+          });
+        },
+      );
+
+      setState(() {
+        _isHrvStreaming = true;
+        _streamingStatus = 'HRV streaming active';
+      });
+    } catch (e) {
+      setState(() {
+        _streamingStatus = 'Failed to start HRV stream: $e';
+      });
+    }
+  }
+
+  Future<void> _stopHrvStreaming() async {
+    await _hrvSubscription?.cancel();
+    _hrvSubscription = null;
+    setState(() {
+      _isHrvStreaming = false;
+      _streamingStatus = 'HRV stream stopped';
+    });
+  }
+
+  Future<void> _stopAllStreaming() async {
+    await _stopHrStreaming();
+    await _stopHrvStreaming();
+    setState(() {
+      _streamingStatus = 'All streams stopped';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -186,6 +297,14 @@ class _MyAppState extends State<MyApp> {
                           style: const TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
                       Text('Permissions: $_permissionStatus'),
+                      const SizedBox(height: 8),
+                      Text('Streaming: $_streamingStatus',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: _isHrStreaming || _isHrvStreaming
+                                ? Colors.green
+                                : Colors.grey,
+                          )),
                     ],
                   ),
                 ),
@@ -219,38 +338,88 @@ class _MyAppState extends State<MyApp> {
                 children: [
                   ElevatedButton.icon(
                     onPressed: _read,
-                    icon: const Icon(Icons.favorite),
-                    label: const Text('Read Health Data'),
+                    icon: const Icon(Icons.favorite, color: Colors.white),
+                    label: const Text('Read Health Data',
+                        style: TextStyle(color: Colors.white)),
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.red),
                   ),
                   ElevatedButton.icon(
                     onPressed: _requestPermissions,
-                    icon: const Icon(Icons.security),
-                    label: const Text('Request Permissions'),
+                    icon: const Icon(Icons.security, color: Colors.white),
+                    label: const Text('Request Permissions',
+                        style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange),
                   ),
                   ElevatedButton.icon(
                     onPressed: _testHealthKit,
-                    icon: const Icon(Icons.health_and_safety),
-                    label: const Text('Test HealthKit'),
+                    icon: const Icon(Icons.health_and_safety,
+                        color: Colors.white),
+                    label: const Text('Test HealthKit',
+                        style: TextStyle(color: Colors.white)),
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   ),
                   ElevatedButton.icon(
                     onPressed: _getCacheStats,
-                    icon: const Icon(Icons.storage),
-                    label: const Text('Cache Stats'),
+                    icon: const Icon(Icons.storage, color: Colors.white),
+                    label: const Text('Cache Stats',
+                        style: TextStyle(color: Colors.white)),
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                   ),
                   ElevatedButton.icon(
                     onPressed: _clearOldCache,
-                    icon: const Icon(Icons.clear),
-                    label: const Text('Clear Cache'),
+                    icon: const Icon(Icons.clear, color: Colors.white),
+                    label: const Text('Clear Cache',
+                        style: TextStyle(color: Colors.white)),
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Streaming Section
+              const Text('Real-Time Streaming:',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: _startHrStreaming,
+                    icon: Icon(_isHrStreaming ? Icons.stop : Icons.play_arrow,
+                        color: Colors.white),
+                    label: Text(
+                        _isHrStreaming ? 'Stop HR Stream' : 'Start HR Stream',
+                        style: const TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            _isHrStreaming ? Colors.red : Colors.pink),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: _startHrvStreaming,
+                    icon: Icon(_isHrvStreaming ? Icons.stop : Icons.play_arrow,
+                        color: Colors.white),
+                    label: Text(
+                        _isHrvStreaming
+                            ? 'Stop HRV Stream'
+                            : 'Start HRV Stream',
+                        style: const TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            _isHrvStreaming ? Colors.red : Colors.purple),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: _stopAllStreaming,
+                    icon: const Icon(Icons.stop_circle, color: Colors.white),
+                    label: const Text('Stop All Streams',
+                        style: TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red[800]),
                   ),
                 ],
               ),
