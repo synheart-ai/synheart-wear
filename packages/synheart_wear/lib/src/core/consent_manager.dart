@@ -1,4 +1,4 @@
-import '../adapters/health_adapter.dart';
+import '../adapters/platform_adapter.dart';
 import '../core/models.dart';
 
 /// Consent status for data access
@@ -33,8 +33,8 @@ class ConsentManager {
     final results = <PermissionType, ConsentStatus>{};
 
     try {
-      // Use health package for real permission requests
-      final granted = await HealthAdapter.requestPermissions(permissions);
+      // Use platform interface for real permission requests
+      final granted = await PlatformAdapter.requestPermissions(permissions);
       
       for (final permission in permissions) {
         final status = granted ? ConsentStatus.granted : ConsentStatus.denied;

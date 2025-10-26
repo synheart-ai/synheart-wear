@@ -176,19 +176,16 @@ code_sign_if_enabled() {
 }
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_framework "${BUILT_PRODUCTS_DIR}/device_info_plus/device_info_plus.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/health/health.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/path_provider_foundation/path_provider_foundation.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/synheart_wear/synheart_wear.framework"
 fi
 if [[ "$CONFIGURATION" == "Profile" ]]; then
-  install_framework "${BUILT_PRODUCTS_DIR}/device_info_plus/device_info_plus.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/health/health.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/path_provider_foundation/path_provider_foundation.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/synheart_wear/synheart_wear.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework "${BUILT_PRODUCTS_DIR}/device_info_plus/device_info_plus.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/health/health.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/path_provider_foundation/path_provider_foundation.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/synheart_wear/synheart_wear.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait

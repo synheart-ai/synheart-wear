@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/foundation.dart';
+import 'package:synheart_wear/synheart_wear_platform_interface.dart';
 
 import '../adapters/wear_adapter.dart';
 import 'models.dart';
@@ -19,10 +20,15 @@ class SynheartWear {
   StreamController<WearMetrics>? _hrStreamController;
   StreamController<WearMetrics>? _hrvStreamController;
   Timer? _streamTimer;
+  Timer? _hrvTimer;
 
   final Map<DeviceAdapter, WearAdapter> _adapterRegistry;
+  final SynheartWearPlatform _platform = SynheartWearPlatform.instance;
 
-  Timer? _hrvTimer; // Separate timer for HRV
+  StreamSubscription<Map<String, dynamic>>? _hrPlatformSubscription;
+  StreamSubscription<Map<String, dynamic>>? _hrvPlatformSubscription;
+  bool _hrStreamActive = false;
+  bool _hrvStreamActive = false;
 
   SynheartWear(
       {SynheartWearConfig? config, Map<DeviceAdapter, WearAdapter>? adapters})
@@ -39,6 +45,9 @@ class SynheartWear {
     if (_initialized) return;
 
     try {
+      // Initialize platform
+      await _platform.initialize();
+
       // Request necessary permissions
       await _requestPermissions();
 
@@ -61,26 +70,28 @@ class SynheartWear {
       // Validate consents
       ConsentManager.validateConsents(_getRequiredPermissions());
 
-      // Gather data from enabled adapters
+      // Use platform interface for real-time data
+      if (isRealTime) {
+        final platformData = await _platform.readMetrics();
+        return WearMetrics.fromJson(platformData);
+      }
+
+      // Gather data from enabled adapters for batch data
       final adapterData = <WearMetrics?>[];
       for (final adapter in _enabledAdapters()) {
         try {
           final data = await adapter.readSnapshot(isRealTime: isRealTime);
           adapterData.add(data);
         } catch (e) {
-          // Keep non-fatal, tag by adapter id
           print('${adapter.id} error: $e');
         }
       }
-
-      log('Read data from ${adapterData.first!} adapters');
 
       // Normalize and merge data
       final mergedData = _normalizer.mergeSnapshots(adapterData);
 
       // Validate data quality
       if (!_normalizer.validateMetrics(mergedData)) {
-        log('Invalid metrics data: $mergedData');
         throw SynheartWearError('Invalid metrics data received');
       }
 
@@ -99,13 +110,30 @@ class SynheartWear {
 
   /// Stream real-time heart rate data
   Stream<WearMetrics> streamHR({Duration? interval}) {
-    final actualInterval = interval ?? config.streamInterval;
-
     _hrStreamController ??= StreamController<WearMetrics>.broadcast();
 
-    // Start timer when first listener subscribes
-    if (!_hrStreamController!.hasListener) {
-      _startStreaming(actualInterval);
+    log('Starting HR stream with interval: $interval');
+
+    // Start platform stream if not already active
+    if (!_hrStreamActive) {
+      log('Setting up platform HR stream listener');
+      _hrPlatformSubscription = _platform.streamHeartRate().listen(
+        (data) {
+          log('Received HR data: $data');
+          try {
+            final metrics = WearMetrics.fromJson(data);
+            _hrStreamController?.add(metrics);
+          } catch (e) {
+            log('Error parsing HR data: $e');
+            _hrStreamController?.addError(e);
+          }
+        },
+        onError: (error) {
+          log('HR platform stream error: $error');
+          _hrStreamController?.addError(error);
+        },
+      );
+      _hrStreamActive = true;
     }
 
     return _hrStreamController!.stream;
@@ -113,13 +141,30 @@ class SynheartWear {
 
   /// Stream HRV data in configurable windows (RFC specification)
   Stream<WearMetrics> streamHRV({Duration? windowSize}) {
-    final actualWindowSize = windowSize ?? config.hrvWindowSize;
-
     _hrvStreamController ??= StreamController<WearMetrics>.broadcast();
 
-    // Start timer when first listener subscribes
-    if (!_hrvStreamController!.hasListener) {
-      _startHrvStreaming(actualWindowSize);
+    log('Starting HRV stream with window size: $windowSize');
+
+    // Start platform stream if not already active
+    if (!_hrvStreamActive) {
+      log('Setting up platform HRV stream listener');
+      _hrvPlatformSubscription = _platform.streamHRV().listen(
+        (data) {
+          log('Received HRV data: $data');
+          try {
+            final metrics = WearMetrics.fromJson(data);
+            _hrvStreamController?.add(metrics);
+          } catch (e) {
+            log('Error parsing HRV data: $e');
+            _hrvStreamController?.addError(e);
+          }
+        },
+        onError: (error) {
+          log('HRV platform stream error: $error');
+          _hrvStreamController?.addError(error);
+        },
+      );
+      _hrvStreamActive = true;
     }
 
     return _hrvStreamController!.stream;
@@ -180,11 +225,16 @@ class SynheartWear {
   }
 
   /// Dispose resources
+  /// Dispose resources
   void dispose() {
+    _hrPlatformSubscription?.cancel();
+    _hrvPlatformSubscription?.cancel();
     _streamTimer?.cancel();
     _hrvTimer?.cancel();
     _hrStreamController?.close();
     _hrvStreamController?.close();
+    _hrStreamActive = false;
+    _hrvStreamActive = false;
     _initialized = false;
   }
 

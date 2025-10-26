@@ -201,21 +201,22 @@ class _MyAppState extends State<MyApp> {
         return;
       }
 
+      print("🚀 Starting HR stream...");
       setState(() {
         _streamingStatus = 'Starting HR stream...';
       });
 
-      _hrSubscription =
-          _sdk.streamHR(interval: const Duration(seconds: 2)).listen(
+      _hrSubscription = _sdk.streamHR(interval: const Duration(seconds: 2)).listen(
         (metrics) {
+          print("📱 Received HR metrics: ${metrics.getMetric(MetricType.hr)} BPM");
           setState(() {
             _updateMetrics(metrics);
             _last = 'HR Stream: ${metrics.toJson()}';
-            _streamingStatus =
-                'HR streaming (${DateTime.now().toLocal().toString().substring(11, 19)})';
+            _streamingStatus = 'HR streaming (${DateTime.now().toLocal().toString().substring(11, 19)})';
           });
         },
         onError: (error) {
+          print("❌ HR stream error: $error");
           setState(() {
             _streamingStatus = 'HR stream error: $error';
           });
@@ -227,6 +228,7 @@ class _MyAppState extends State<MyApp> {
         _streamingStatus = 'HR streaming active';
       });
     } catch (e) {
+      print("❌ Failed to start HR stream: $e");
       setState(() {
         _streamingStatus = 'Failed to start HR stream: $e';
       });
@@ -694,7 +696,7 @@ class _MyAppState extends State<MyApp> {
   /// Update live metrics data from stream
   void _updateMetrics(WearMetrics metrics) {
     _currentHr = metrics.getMetric(MetricType.hr);
-    _currentHrv = metrics.getMetric(MetricType.hrvRmssd);
+    _currentHrv = metrics.getMetric(MetricType.hrvSdnn);
     _currentSteps = metrics.getMetric(MetricType.steps);
     _currentCalories = metrics.getMetric(MetricType.calories);
     _lastUpdateTime = DateTime.now().toLocal().toString().substring(11, 19);

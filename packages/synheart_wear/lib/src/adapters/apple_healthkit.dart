@@ -1,5 +1,5 @@
 import '../../synheart_wear.dart';
-import 'health_adapter.dart';
+import 'platform_adapter.dart';
 import 'wear_adapter.dart';
 
 class AppleHealthKitAdapter implements WearAdapter {
@@ -16,15 +16,14 @@ class AppleHealthKitAdapter implements WearAdapter {
 
   @override
   Future<void> ensurePermissions() async {
-    // Check if HealthKit is available
-    final isAvailable = await HealthAdapter.isAvailable();
+    // Check if platform is available
+    final isAvailable = await PlatformAdapter.isAvailable();
     if (!isAvailable) {
       throw DeviceUnavailableError('HealthKit is not available on this device');
     }
 
-    // Request permissions using health package
-    final granted =
-        await HealthAdapter.requestPermissions(supportedPermissions);
+    // Request permissions using platform interface
+    final granted = await PlatformAdapter.requestPermissions(supportedPermissions);
     if (!granted) {
       throw PermissionDeniedError('HealthKit permissions were denied');
     }
@@ -33,23 +32,13 @@ class AppleHealthKitAdapter implements WearAdapter {
   @override
   Future<WearMetrics?> readSnapshot({bool isRealTime = true}) async {
     try {
-      // Use shorter time range for real-time focus exercises, longer for general health
-      final timeRange = isRealTime
-          ? const Duration(minutes: 2) // For focus exercises - very recent data
-          : const Duration(hours: 24); // For general health - broader data
-
-      // Read data using health package
-      final dataPoints = await HealthAdapter.readHealthData(
+      // Read data using platform interface
+      final metrics = await PlatformAdapter.readHealthData(
         supportedPermissions,
-        startTime: DateTime.now().subtract(timeRange),
+        startTime: isRealTime 
+            ? DateTime.now().subtract(const Duration(minutes: 2))
+            : DateTime.now().subtract(const Duration(hours: 24)),
         endTime: DateTime.now(),
-      );
-
-      // Convert to WearMetrics
-      final metrics = HealthAdapter.convertToWearMetrics(
-        dataPoints,
-        deviceId: 'applewatch_${DateTime.now().millisecondsSinceEpoch}',
-        source: id,
       );
 
       return metrics;

@@ -1,17 +1,17 @@
 import 'dart:io';
 import 'package:synheart_wear/synheart_wear.dart';
-import 'health_adapter.dart';
+import 'platform_adapter.dart';
 
 class HealthKitPlatform {
-  /// Request permissions using health package (v13.2.1)
+  /// Request permissions using platform interface
   static Future<bool> requestPermissions() async {
     if (!Platform.isIOS) return false;
     
-    final isAvailable = await HealthAdapter.isAvailable();
+    final isAvailable = await PlatformAdapter.isAvailable();
     if (!isAvailable) return false;
     
     // Request basic permissions for heart rate and HRV
-    return await HealthAdapter.requestPermissions({
+    return await PlatformAdapter.requestPermissions({
       PermissionType.heartRate,
       PermissionType.heartRateVariability,
     });
@@ -20,38 +20,36 @@ class HealthKitPlatform {
   /// Check if HealthKit is available
   static Future<bool> isAvailable() async {
     if (!Platform.isIOS) return false;
-    return await HealthAdapter.isAvailable();
+    return await PlatformAdapter.isAvailable();
   }
 
-  /// Get current heart rate
+  /// Get current heart rate using platform interface
   static Future<double?> getCurrentHeartRate() async {
     if (!Platform.isIOS) return null;
     
-    final dataPoints = await HealthAdapter.readHealthData({
+    final metrics = await PlatformAdapter.readHealthData({
       PermissionType.heartRate,
     });
     
-    final metrics = HealthAdapter.convertToWearMetrics(dataPoints);
     return metrics?.getMetric(MetricType.hr)?.toDouble();
   }
 
-  /// Get current HRV
+  /// Get current HRV using platform interface
   static Future<double?> getCurrentHRV() async {
     if (!Platform.isIOS) return null;
     
-    final dataPoints = await HealthAdapter.readHealthData({
+    final metrics = await PlatformAdapter.readHealthData({
       PermissionType.heartRateVariability,
     });
     
-    final metrics = HealthAdapter.convertToWearMetrics(dataPoints);
     return metrics?.getMetric(MetricType.hrvSdnn)?.toDouble();
   }
   
-  /// Get permission status for specific types (v13.2.1 feature)
+  /// Get permission status using platform interface
   static Future<Map<PermissionType, bool>> getPermissionStatus(
     Set<PermissionType> permissions,
   ) async {
     if (!Platform.isIOS) return {};
-    return await HealthAdapter.getPermissionStatus(permissions);
+    return await PlatformAdapter.getPermissionStatus(permissions);
   }
 }
