@@ -1,6 +1,6 @@
-# synheart_wear
+# Synheart Wear
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/synheart-ai/synheart_wear)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/synheart-ai/synheart-wear)
 [![Flutter](https://img.shields.io/badge/flutter-%3E%3D3.22.0-blue.svg)](https://flutter.dev)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -264,7 +264,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Documentation**: [docs/RFC.md](docs/RFC.md)
 - **Data Schema**: [schema/metrics.schema.json](schema/metrics.schema.json)
 - **Synheart AI**: [synheart.ai](https://synheart.ai)
-- **Issues**: [GitHub Issues](https://github.com/synheart-ai/synheart_wear/issues)
+- **Issues**: [GitHub Issues](https://github.com/synheart-ai/synheart-wear/issues)
 
 ## 👥 Authors
 
