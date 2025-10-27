@@ -114,9 +114,9 @@ class _MyAppState extends State<MyApp> {
         _last = m.toJson().toString();
         _status = 'Metrics read successfully';
       });
-    } catch (e) {
+    } catch (e, s) {
       setState(() {
-        _last = 'Error: $e';
+        _last = 'Error: $e, $s';
         _status = 'Failed to read metrics';
       });
     }
@@ -694,7 +694,9 @@ class _MyAppState extends State<MyApp> {
   /// Update live metrics data from stream
   void _updateMetrics(WearMetrics metrics) {
     _currentHr = metrics.getMetric(MetricType.hr);
-    _currentHrv = metrics.getMetric(MetricType.hrvRmssd);
+    // Try hrvSdnn first, fallback to hrvRmssd if not available
+    _currentHrv = metrics.getMetric(MetricType.hrvSdnn) ??
+        metrics.getMetric(MetricType.hrvRmssd);
     _currentSteps = metrics.getMetric(MetricType.steps);
     _currentCalories = metrics.getMetric(MetricType.calories);
     _lastUpdateTime = DateTime.now().toLocal().toString().substring(11, 19);
