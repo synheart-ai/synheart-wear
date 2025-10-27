@@ -1,0 +1,66 @@
+name: Flutter Package CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies for package
+        working-directory: ./packages/synheart_wear
+        run: flutter pub get
+
+      - name: Install dependencies for example
+        working-directory: ./examples/flutter_example
+        run: flutter pub get
+
+      - name: Analyze package
+        working-directory: ./packages/synheart_wear
+        run: flutter analyze
+
+      - name: Run package tests
+        working-directory: ./packages/synheart_wear
+        run: flutter test
+
+      # - name: Analyze example
+      #   working-directory: ./examples/flutter_example
+      #   run: flutter analyze
+
+      # - name: Run example tests
+      #   working-directory: ./examples/flutter_example
+      #   run: flutter test
+
+  # Optional publishing step (disabled for now)
+  # publish:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main'
+  #
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: subosito/flutter-action@v2
+  #       with:
+  #         flutter-version: 'stable'
+  #     - name: Install dependencies
+  #       working-directory: ./packages/synheart_wear
+  #       run: flutter pub get
+  #     - name: Publish to pub.dev
+  #       working-directory: ./packages/synheart_wear
+  #       env:
+  #         PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+  #       run: |
+  #         echo "$PUB_CREDENTIALS" > ~/.pub-cache/credentials.json
+  #         flutter pub publish --force

@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
+
+import '../adapters/wear_adapter.dart';
 import 'models.dart';
 import '../normalization/normalizer.dart';
 import '../adapters/apple_healthkit.dart';
@@ -16,9 +19,19 @@ class SynheartWear {
   StreamController<WearMetrics>? _hrvStreamController;
   Timer? _streamTimer;
 
-  SynheartWear({SynheartWearConfig? config})
+  final Map<DeviceAdapter, WearAdapter> _adapterRegistry;
+
+  Timer? _hrvTimer; // Separate timer for HRV
+
+  SynheartWear(
+      {SynheartWearConfig? config, Map<DeviceAdapter, WearAdapter>? adapters})
       : config = config ?? const SynheartWearConfig(),
-        _normalizer = Normalizer();
+        _normalizer = Normalizer(),
+        _adapterRegistry = adapters ??
+            {
+              DeviceAdapter.appleHealthKit: AppleHealthKitAdapter(),
+              DeviceAdapter.fitbit: FitbitAdapter(),
+            };
 
   /// Initialize the SDK with permissions and setup
   Future<void> initialize() async {
@@ -27,10 +40,10 @@ class SynheartWear {
     try {
       // Request necessary permissions
       await _requestPermissions();
-      
+
       // Initialize adapters
       await _initializeAdapters();
-      
+
       _initialized = true;
     } catch (e) {
       throw SynheartWearError('Failed to initialize SynheartWear: $e');
@@ -38,7 +51,7 @@ class SynheartWear {
   }
 
   /// Read current metrics from all enabled adapters
-  Future<WearMetrics> readMetrics() async {
+  Future<WearMetrics> readMetrics({bool isRealTime = false}) async {
     if (!_initialized) {
       await initialize();
     }
@@ -49,29 +62,19 @@ class SynheartWear {
 
       // Gather data from enabled adapters
       final adapterData = <WearMetrics?>[];
-      
-      if (config.isAdapterEnabled(DeviceAdapter.appleHealthKit)) {
+      for (final adapter in _enabledAdapters()) {
         try {
-          final appleData = await AppleHealthKitAdapter.readSnapshot();
-          adapterData.add(appleData);
+          final data = await adapter.readSnapshot(isRealTime: isRealTime);
+          adapterData.add(data);
         } catch (e) {
-          // Log error but continue with other adapters
-          print('Apple HealthKit error: $e');
-        }
-      }
-
-      if (config.isAdapterEnabled(DeviceAdapter.fitbit)) {
-        try {
-          final fitbitData = await FitbitAdapter.readSnapshot();
-          adapterData.add(fitbitData);
-        } catch (e) {
-          print('Fitbit error: $e');
+          // Keep non-fatal, tag by adapter id
+          print('${adapter.id} error: $e');
         }
       }
 
       // Normalize and merge data
       final mergedData = _normalizer.mergeSnapshots(adapterData);
-      
+
       // Validate data quality
       if (!_normalizer.validateMetrics(mergedData)) {
         throw SynheartWearError('Invalid metrics data received');
@@ -79,7 +82,8 @@ class SynheartWear {
 
       // Cache data if enabled
       if (config.enableLocalCaching) {
-        await LocalCache.storeSession(mergedData);
+        await LocalCache.storeSession(mergedData,
+            enableEncryption: config.enableEncryption);
       }
 
       return mergedData;
@@ -92,37 +96,28 @@ class SynheartWear {
   /// Stream real-time heart rate data
   Stream<WearMetrics> streamHR({Duration? interval}) {
     final actualInterval = interval ?? config.streamInterval;
-    
+
     _hrStreamController ??= StreamController<WearMetrics>.broadcast();
-    
-    // Start streaming if not already active
-    if (_streamTimer == null || !_streamTimer!.isActive) {
+
+    // Start timer when first listener subscribes
+    if (!_hrStreamController!.hasListener) {
       _startStreaming(actualInterval);
     }
-    
+
     return _hrStreamController!.stream;
   }
 
   /// Stream HRV data in configurable windows (RFC specification)
   Stream<WearMetrics> streamHRV({Duration? windowSize}) {
     final actualWindowSize = windowSize ?? config.hrvWindowSize;
-    
+
     _hrvStreamController ??= StreamController<WearMetrics>.broadcast();
-    
-    // Start HRV streaming
-    Timer.periodic(actualWindowSize, (timer) async {
-      try {
-        final metrics = await readMetrics();
-        final hrvData = metrics.getMetric(MetricType.hrvRmssd);
-        
-        if (hrvData != null) {
-          _hrvStreamController!.add(metrics);
-        }
-      } catch (e) {
-        _hrvStreamController!.addError(e);
-      }
-    });
-    
+
+    // Start timer when first listener subscribes
+    if (!_hrvStreamController!.hasListener) {
+      _startHrvStreaming(actualWindowSize);
+    }
+
     return _hrvStreamController!.stream;
   }
 
@@ -135,7 +130,7 @@ class SynheartWear {
     if (!config.enableLocalCaching) {
       throw SynheartWearError('Local caching is disabled');
     }
-    
+
     return await LocalCache.getCachedSessions(
       startDate: startDate,
       endDate: endDate,
@@ -146,16 +141,21 @@ class SynheartWear {
   /// Get cache statistics
   Future<Map<String, Object?>> getCacheStats() async {
     if (!config.enableLocalCaching) {
-      return {'enabled': false};
+      return {
+        'enabled': false,
+        'encryption_enabled': false,
+      };
     }
-    
-    return await LocalCache.getCacheStats();
+
+    return await LocalCache.getCacheStats(
+        encryptionEnabled: config.enableEncryption);
   }
 
   /// Clear old cached data
-  Future<void> clearOldCache({Duration maxAge = const Duration(days: 30)}) async {
+  Future<void> clearOldCache(
+      {Duration maxAge = const Duration(days: 30)}) async {
     if (!config.enableLocalCaching) return;
-    
+
     await LocalCache.clearOldData(maxAge: maxAge);
   }
 
@@ -165,7 +165,8 @@ class SynheartWear {
     String? reason,
   }) async {
     final requiredPermissions = permissions ?? _getRequiredPermissions();
-    return await ConsentManager.requestConsent(requiredPermissions, reason: reason);
+    return await ConsentManager.requestConsent(requiredPermissions,
+        reason: reason);
   }
 
   /// Check current permission status
@@ -181,6 +182,7 @@ class SynheartWear {
   /// Dispose resources
   void dispose() {
     _streamTimer?.cancel();
+    _hrvTimer?.cancel();
     _hrStreamController?.close();
     _hrvStreamController?.close();
     _initialized = false;
@@ -195,26 +197,24 @@ class SynheartWear {
   /// Get required permissions based on enabled adapters
   Set<PermissionType> _getRequiredPermissions() {
     final permissions = <PermissionType>{};
-    
-    if (config.isAdapterEnabled(DeviceAdapter.appleHealthKit)) {
-      permissions.addAll({PermissionType.heartRate, PermissionType.heartRateVariability});
+    for (final adapter in _enabledAdapters()) {
+      permissions.addAll(adapter.supportedPermissions);
     }
-    
-    if (config.isAdapterEnabled(DeviceAdapter.fitbit)) {
-      permissions.addAll({PermissionType.heartRate, PermissionType.steps, PermissionType.calories});
-    }
-    
     return permissions;
+  }
+
+  // Helper to get enabled adapter instances
+  List<WearAdapter> _enabledAdapters() {
+    return config.enabledAdapters
+        .where(_adapterRegistry.containsKey)
+        .map((d) => _adapterRegistry[d]!)
+        .toList();
   }
 
   /// Initialize enabled adapters
   Future<void> _initializeAdapters() async {
-    if (config.isAdapterEnabled(DeviceAdapter.appleHealthKit)) {
-      await AppleHealthKitAdapter.ensurePermissions();
-    }
-    
-    if (config.isAdapterEnabled(DeviceAdapter.fitbit)) {
-      await FitbitAdapter.ensurePermissions();
+    for (final adapter in _enabledAdapters()) {
+      await adapter.ensurePermissions();
     }
   }
 
@@ -222,8 +222,15 @@ class SynheartWear {
   void _startStreaming(Duration interval) {
     _streamTimer?.cancel();
     _streamTimer = Timer.periodic(interval, (timer) async {
+      // Check if we still have subscribers
+      if (_hrStreamController?.hasListener != true) {
+        _streamTimer?.cancel();
+        _streamTimer = null;
+        return;
+      }
+
       try {
-        final metrics = await readMetrics();
+        final metrics = await readMetrics(isRealTime: true);
         _hrStreamController?.add(metrics);
       } catch (e) {
         _hrStreamController?.addError(e);
@@ -231,4 +238,37 @@ class SynheartWear {
     });
   }
 
+  /// Start HRV streaming timer
+  void _startHrvStreaming(Duration windowSize) {
+    _hrvTimer?.cancel();
+    _hrvTimer = Timer.periodic(windowSize, (timer) async {
+      // Check if we still have subscribers
+      if (_hrvStreamController?.hasListener != true) {
+        _hrvTimer?.cancel();
+        _hrvTimer = null;
+        return;
+      }
+
+      try {
+        final metrics = await readMetrics(isRealTime: true);
+        // Check for either HRV metric type (SDNN or RMSSD)
+        final hrvSdnn = metrics.getMetric(MetricType.hrvSdnn);
+        final hrvRmssd = metrics.getMetric(MetricType.hrvRmssd);
+
+        // Emit metrics if any HRV data is present
+        if (hrvSdnn != null || hrvRmssd != null) {
+          _hrvStreamController?.add(metrics);
+        }
+      } catch (e) {
+        _hrvStreamController?.addError(e);
+      }
+    });
+  }
+
+  /// Getter for testing timer state
+  @visibleForTesting
+  bool get isStreamTimerActive => _streamTimer?.isActive ?? false;
+
+  @visibleForTesting
+  bool get isHrvTimerActive => _hrvTimer?.isActive ?? false;
 }

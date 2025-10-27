@@ -1,6 +1,6 @@
-# synheart_wear
+# Synheart Wear
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/synheart-ai/synheart_wear)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/synheart-ai/synheart-wear)
 [![Flutter](https://img.shields.io/badge/flutter-%3E%3D3.22.0-blue.svg)](https://flutter.dev)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -163,10 +163,11 @@ await synheart.clearOldCache(maxAge: Duration(days: 30));
 ## 🔒 Privacy & Security
 
 - **Consent-First Design**: Users must explicitly approve data access
-- **Data Encryption**: AES-256 encryption for local storage
+- **Data Encryption**: AES-256-CBC encryption for local storage
+- **Key Management**: Automatic key generation and rotation
 - **No Persistent IDs**: Anonymized UUIDs for experiments
 - **Compliant**: Follows Synheart Data Governance Policy
-- **Right to Forget**: Users can revoke permissions anytime
+- **Right to Forget**: Users can revoke permissions and delete encrypted data
 
 ## 🏗️ Architecture
 
@@ -236,13 +237,23 @@ Tests cover:
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+We welcome contributions! The easiest way to contribute is by implementing a new wearable device adapter.
 
+### Want to Add Support for Your Device?
+
+See our comprehensive **[Contributing Guidelines](CONTRIBUTING.md)** which covers:
+- How to implement the `WearAdapter` interface
+- Code standards and best practices
+- Testing requirements
+- Submission process
+
+**Quick Steps:**
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+2. Create your adapter class implementing `WearAdapter`
+3. Write tests for your adapter
+4. Submit a pull request
+
+Looking for a device to implement? Check our [roadmap](#-roadmap) or open an issue!
 
 ## 📄 License
 
@@ -253,7 +264,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Documentation**: [docs/RFC.md](docs/RFC.md)
 - **Data Schema**: [schema/metrics.schema.json](schema/metrics.schema.json)
 - **Synheart AI**: [synheart.ai](https://synheart.ai)
-- **Issues**: [GitHub Issues](https://github.com/synheart-ai/synheart_wear/issues)
+- **Issues**: [GitHub Issues](https://github.com/synheart-ai/synheart-wear/issues)
 
 ## 👥 Authors
 

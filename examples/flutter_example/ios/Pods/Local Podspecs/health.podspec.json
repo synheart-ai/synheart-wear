@@ -1,0 +1,30 @@
+{
+  "name": "health",
+  "version": "13.2.1",
+  "summary": "Wrapper for Apple's HealthKit on iOS and Google's Health Connect on Android.",
+  "description": "Wrapper for Apple's HealthKit on iOS and Google's Health Connect on Android.",
+  "homepage": "https://pub.dev/packages/health",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "Copenhagen Research Platform at DTU": "support@carp.dk"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "Classes/**/*",
+  "public_header_files": "Classes/**/*.h",
+  "dependencies": {
+    "Flutter": []
+  },
+  "platforms": {
+    "ios": "14.0"
+  },
+  "pod_target_xcconfig": {
+    "DEFINES_MODULE": "YES",
+    "VALID_ARCHS[sdk=iphonesimulator*]": "x86_64"
+  },
+  "swift_versions": "5.0",
+  "swift_version": "5.0"
+}

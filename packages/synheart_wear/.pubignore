@@ -1,0 +1,26 @@
+# Ignore generated and IDE-specific files
+**/*.g.dart
+**/*.freezed.dart
+**/*.mocks.dart
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+/build/
+.flutter-plugins
+.flutter-plugins-dependencies
+**/generated_plugin_registrant.dart
+
+# Platform-specific
+ios/Pods/
+ios/.symlinks/
+android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+
+# User-specific
+**/xcuserdata/
+
