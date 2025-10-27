@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import '../../synheart_wear.dart';
 import 'health_adapter.dart';
 import 'wear_adapter.dart';

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import '../core/models.dart';
 
 /// Configuration for the normalization engine
@@ -73,12 +71,6 @@ class Normalizer {
       // Use first available snapshot
       return validSnaps.first;
     }
-  }
-
-  // Check if data is within acceptable age limit
-  bool _isDataFresh(WearMetrics data) {
-    final age = DateTime.now().difference(data.timestamp);
-    return age <= config.maxDataAge;
   }
 
   /// Validate metrics data quality

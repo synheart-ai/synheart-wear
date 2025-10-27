@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 /// Supported metric types as defined in the RFC schema
 enum MetricType {
   hr,
