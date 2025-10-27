@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 /// Supported metric types as defined in the RFC schema
 enum MetricType {
   hr,
@@ -17,20 +19,24 @@ class SynheartWearError implements Exception {
   SynheartWearError(this.message, {this.code, this.originalException});
 
   @override
-  String toString() => 'SynheartWearError: $message${code != null ? ' ($code)' : ''}';
+  String toString() =>
+      'SynheartWearError: $message${code != null ? ' ($code)' : ''}';
 }
 
 class PermissionDeniedError extends SynheartWearError {
-  PermissionDeniedError(String message) : super(message, code: 'PERMISSION_DENIED');
+  PermissionDeniedError(String message)
+      : super(message, code: 'PERMISSION_DENIED');
 }
 
 class DeviceUnavailableError extends SynheartWearError {
-  DeviceUnavailableError(String message) : super(message, code: 'DEVICE_UNAVAILABLE');
+  DeviceUnavailableError(String message)
+      : super(message, code: 'DEVICE_UNAVAILABLE');
 }
 
 class NetworkError extends SynheartWearError {
-  NetworkError(String message, [Exception? originalException]) 
-      : super(message, code: 'NETWORK_ERROR', originalException: originalException);
+  NetworkError(String message, [Exception? originalException])
+      : super(message,
+            code: 'NETWORK_ERROR', originalException: originalException);
 }
 
 /// Unified wearable metrics data model following RFC schema
@@ -62,7 +68,7 @@ class WearMetrics {
 
   /// Convert to JSON following RFC schema
   Map<String, Object?> toJson() => {
-        'timestamp': timestamp.toUtc().toIso8601String(),
+        'timestamp': timestamp.toIso8601String(),
         'device_id': deviceId,
         'source': source,
         'metrics': metrics,

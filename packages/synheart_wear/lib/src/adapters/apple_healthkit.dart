@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import '../../synheart_wear.dart';
 import 'health_adapter.dart';
 import 'wear_adapter.dart';
@@ -34,9 +36,7 @@ class AppleHealthKitAdapter implements WearAdapter {
   Future<WearMetrics?> readSnapshot({bool isRealTime = true}) async {
     try {
       // Use shorter time range for real-time focus exercises, longer for general health
-      final timeRange = isRealTime
-          ? const Duration(minutes: 2) // For focus exercises - very recent data
-          : const Duration(hours: 24); // For general health - broader data
+      final timeRange = const Duration(hours: 24);
 
       // Read data using health package
       final dataPoints = await HealthAdapter.readHealthData(

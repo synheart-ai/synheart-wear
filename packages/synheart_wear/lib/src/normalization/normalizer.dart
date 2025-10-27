@@ -11,7 +11,7 @@ class NormalizerConfig {
   const NormalizerConfig({
     this.preferLatestData = true,
     this.mergeMetricsFromMultipleSources = true,
-    this.maxDataAge = const Duration(minutes: 5),
+    this.maxDataAge = const Duration(hours: 12),
   });
 }
 
@@ -23,19 +23,16 @@ class Normalizer {
 
   /// Merge multiple wearable snapshots into a single normalized output
   WearMetrics mergeSnapshots(List<WearMetrics?> snaps) {
-    log('Merging ${snaps.length} snapshots with config: ${config.preferLatestData}');
     // Filter out null values and validate data age
     final validSnaps = snaps
         .where((e) => e != null)
-        .where((e) => _isDataFresh(e!))
+        //.where((e) => _isDataFresh(e!))
         .cast<WearMetrics>()
         .toList();
 
-    log('Found ${validSnaps.length} valid snapshots after filtering');
-
     if (validSnaps.isEmpty) {
       return WearMetrics(
-        timestamp: DateTime.now().toUtc(),
+        timestamp: DateTime.now(),
         deviceId: 'unknown',
         source: 'none',
         metrics: {},
@@ -44,7 +41,7 @@ class Normalizer {
     }
 
     if (config.preferLatestData) {
-      // Sort by timestamp (newest first) - FIXED BUG
+      // Sort by timestamp (newest first)
       validSnaps.sort((a, b) => b.timestamp.compareTo(a.timestamp));
       final latest = validSnaps.first;
 
@@ -80,13 +77,12 @@ class Normalizer {
 
   // Check if data is within acceptable age limit
   bool _isDataFresh(WearMetrics data) {
-    final age = DateTime.now().toLocal().difference(data.timestamp);
+    final age = DateTime.now().difference(data.timestamp);
     return age <= config.maxDataAge;
   }
 
   /// Validate metrics data quality
   bool validateMetrics(WearMetrics data) {
-    log('Validating metrics from source: ${data.toJson()}');
     if (!data.hasValidData) return false;
 
     // Check for reasonable ranges

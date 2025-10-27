@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/foundation.dart';
 
 import '../adapters/wear_adapter.dart';
@@ -73,14 +72,11 @@ class SynheartWear {
         }
       }
 
-      log('Read data from ${adapterData.first!} adapters');
-
       // Normalize and merge data
       final mergedData = _normalizer.mergeSnapshots(adapterData);
 
       // Validate data quality
       if (!_normalizer.validateMetrics(mergedData)) {
-        log('Invalid metrics data: $mergedData');
         throw SynheartWearError('Invalid metrics data received');
       }
 
@@ -145,10 +141,14 @@ class SynheartWear {
   /// Get cache statistics
   Future<Map<String, Object?>> getCacheStats() async {
     if (!config.enableLocalCaching) {
-      return {'enabled': false};
+      return {
+        'enabled': false,
+        'encryption_enabled': false,
+      };
     }
 
-    return await LocalCache.getCacheStats();
+    return await LocalCache.getCacheStats(
+        encryptionEnabled: config.enableEncryption);
   }
 
   /// Clear old cached data
@@ -251,9 +251,12 @@ class SynheartWear {
 
       try {
         final metrics = await readMetrics(isRealTime: true);
-        final hrvData = metrics.getMetric(MetricType.hrvRmssd);
+        // Check for either HRV metric type (SDNN or RMSSD)
+        final hrvSdnn = metrics.getMetric(MetricType.hrvSdnn);
+        final hrvRmssd = metrics.getMetric(MetricType.hrvRmssd);
 
-        if (hrvData != null) {
+        // Emit metrics if any HRV data is present
+        if (hrvSdnn != null || hrvRmssd != null) {
           _hrvStreamController?.add(metrics);
         }
       } catch (e) {

@@ -22,7 +22,7 @@ class SynheartWearConfig {
       DeviceAdapter.appleHealthKit,
       DeviceAdapter.fitbit,
     },
-    this.streamInterval = const Duration(seconds: 5),
+    this.streamInterval = const Duration(seconds: 2),
     this.hrvWindowSize = const Duration(seconds: 5),
     this.enableLocalCaching = true,
     this.enableEncryption = true,

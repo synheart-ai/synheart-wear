@@ -114,14 +114,15 @@ class LocalCache {
   }
 
   /// Get cache statistics
-  static Future<Map<String, Object?>> getCacheStats() async {
+  static Future<Map<String, Object?>> getCacheStats({bool? encryptionEnabled}) async {
     try {
       final cacheDir = await _getCacheDirectory();
       if (!await cacheDir.exists()) {
         return {
           'total_sessions': 0,
           'cache_size_bytes': 0,
-          'oldest_session': null
+          'oldest_session': null,
+          'encryption_enabled': encryptionEnabled ?? false,
         };
       }
 
@@ -146,6 +147,7 @@ class LocalCache {
         'total_sessions': totalSessions,
         'cache_size_bytes': totalSize,
         'oldest_session': oldestSession?.toIso8601String(),
+        'encryption_enabled': encryptionEnabled ?? false,
       };
     } catch (e) {
       throw SynheartWearError('Failed to get cache stats: $e');

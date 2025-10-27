@@ -122,40 +122,61 @@ class HealthAdapter {
 
     final metrics = <String, num?>{};
     final meta = <String, Object?>{};
+    final metricTimestamps =
+        <String, DateTime>{}; // Track individual metric timestamps
 
-    // Get the most recent data point for timestamp
-    final latestPoint =
-        dataPoints.reduce((a, b) => a.dateTo.isAfter(b.dateTo) ? a : b);
+    // Find the most recent data point for each metric type
+    // This ensures we get the latest available value for each metric
+    final Map<HealthDataType, HealthDataPoint> mostRecentByType = {};
 
-    // Process each data point
     for (final point in dataPoints) {
+      if (!mostRecentByType.containsKey(point.type) ||
+          point.dateTo.isAfter(mostRecentByType[point.type]!.dateTo)) {
+        mostRecentByType[point.type] = point;
+      }
+    }
+
+    // Get the most recent data point overall for main timestamp
+    final latestPoint = mostRecentByType.values.isEmpty
+        ? dataPoints.first
+        : mostRecentByType.values.reduce(
+            (a, b) => a.dateTo.isAfter(b.dateTo) ? a : b,
+          );
+
+    // Process the most recent data point for each metric type
+    for (final point in mostRecentByType.values) {
       switch (point.type) {
         case HealthDataType.HEART_RATE:
           if (point.value is NumericHealthValue) {
             metrics['hr'] = (point.value as NumericHealthValue).numericValue;
+            metricTimestamps['hr'] = point.dateTo;
           }
           break;
         case HealthDataType.HEART_RATE_VARIABILITY_SDNN:
           if (point.value is NumericHealthValue) {
-            metrics['hrv_sdnn'] =
+            metrics['hrv_rmssd'] =
                 (point.value as NumericHealthValue).numericValue;
+            metricTimestamps['hrv_rmssd'] = point.dateTo;
           }
           break;
         case HealthDataType.STEPS:
           if (point.value is NumericHealthValue) {
             metrics['steps'] = (point.value as NumericHealthValue).numericValue;
+            metricTimestamps['steps'] = point.dateTo;
           }
           break;
         case HealthDataType.ACTIVE_ENERGY_BURNED:
           if (point.value is NumericHealthValue) {
             metrics['calories'] =
                 (point.value as NumericHealthValue).numericValue;
+            metricTimestamps['calories'] = point.dateTo;
           }
           break;
         case HealthDataType.SLEEP_IN_BED:
           // Convert sleep duration to hours
           final duration = point.dateTo.difference(point.dateFrom);
           metrics['sleep_hours'] = duration.inMinutes / 60.0;
+          metricTimestamps['sleep_hours'] = point.dateTo;
           break;
         default:
           break;
@@ -165,10 +186,15 @@ class HealthAdapter {
     // Add metadata
     meta['source'] = source ?? 'health_package';
     meta['data_points_count'] = dataPoints.length;
+    meta['data_points_filtered'] = mostRecentByType.length;
     meta['synced'] = true;
+    // Store individual metric timestamps in metadata
+    meta['metric_timestamps'] = metricTimestamps.map(
+      (key, value) => MapEntry(key, value.toIso8601String()),
+    );
 
     return WearMetrics(
-      timestamp: latestPoint.dateTo.toUtc(),
+      timestamp: latestPoint.dateTo,
       deviceId: deviceId ?? 'health_${DateTime.now().millisecondsSinceEpoch}',
       source: source ?? 'health_package',
       metrics: metrics,
