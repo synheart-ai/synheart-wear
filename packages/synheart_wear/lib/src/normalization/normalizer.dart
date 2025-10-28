@@ -24,7 +24,7 @@ class Normalizer {
     // Filter out null values and validate data age
     final validSnaps = snaps
         .where((e) => e != null)
-        //.where((e) => _isDataFresh(e!))
+        .where((e) => _isDataFresh(e!))
         .cast<WearMetrics>()
         .toList();
 
@@ -71,6 +71,12 @@ class Normalizer {
       // Use first available snapshot
       return validSnaps.first;
     }
+  }
+
+  /// Check if data is within acceptable age limit
+  bool _isDataFresh(WearMetrics data) {
+    final age = DateTime.now().difference(data.timestamp);
+    return age <= config.maxDataAge;
   }
 
   /// Validate metrics data quality

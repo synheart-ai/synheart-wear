@@ -237,13 +237,23 @@ Tests cover:
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+We welcome contributions! The easiest way to contribute is by implementing a new wearable device adapter.
 
+### Want to Add Support for Your Device?
+
+See our comprehensive **[Contributing Guidelines](CONTRIBUTING.md)** which covers:
+- How to implement the `WearAdapter` interface
+- Code standards and best practices
+- Testing requirements
+- Submission process
+
+**Quick Steps:**
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+2. Create your adapter class implementing `WearAdapter`
+3. Write tests for your adapter
+4. Submit a pull request
+
+Looking for a device to implement? Check our [roadmap](#-roadmap) or open an issue!
 
 ## 📄 License
 
