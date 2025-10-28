@@ -1,6 +1,6 @@
 name: synheart_wear
 description: Unified wearable SDK for Synheart (HR, HRV, steps, energy, stress).
-version: 0.1.0
+version: 0.1.1
 homepage: https://github.com/synheart-ai/synheart_wear
 environment:
   sdk: '>=3.4.0 <4.0.0'
