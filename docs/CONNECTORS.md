@@ -120,6 +120,68 @@ Learn more about submission workflow and eligibility in our [Contributing Guidel
 
 ---
 
+## 🩺 Supported Devices
+
+### Tier 1 — Core Supported Devices 
+
+Best data quality and reliable APIs. Ideal for focus, HRV, and emotion inference.
+
+| Device | OS | SDK / API | Signals | Status |
+|--------|-----------|--------------------------|----------------------------|-----------------|
+| Apple Watch | iOS | Apple HealthKit / WatchKit | HR, HRV (SDNN), Motion, SpO₂ | ✅ Native integration |
+| Garmin Watches | iOS / Android | Garmin Health SDK | HR, HRV, Stress, Respiration | 🧩 In progress |
+| Polar H10 / Ignite / Unite | iOS / Android | Polar SDK | RR intervals, HR, HRV, Motion | ✅ Preferred research-grade HRV |
+| Fitbit Sense / Versa / Charge | iOS / Android | Fitbit Web API | HR, HRV (proxy), Sleep | 🧩 Planned |
+| WHOOP Strap 4.0 | iOS / Android | WHOOP Developer API | HRV, Recovery, Sleep | 🧩 Planned |
+
+---
+
+### Tier 2 — Research & Extended Devices
+
+Used in labs, affective computing, or advanced research setups.
+
+| Device | OS | SDK | Signals | Notes |
+|--------|-----------|-------------------|-------------------|-----------------------------------|
+| Empatica E4 / E5 | iOS / Android | Empatica Research SDK | HRV, EDA, Temp, Motion | High-fidelity biosignals |
+| Muse S (EEG) | iOS / Android | Muse SDK | EEG, Attention, Meditation | For focus & cognitive experiments |
+| OpenBCI Cyton / Galea | Cross-platform | OpenBCI API | EEG, EMG, HRV, EDA | Open-source neural signals |
+| Biostrap EVO | iOS / Android | Biostrap Labs API | HRV, Sleep, Respiration | Premium recovery data |
+| Oura Ring Gen 3 | iOS / Android | Oura Cloud API | HRV, Temp, Sleep | Great for passive daily signals |
+
+---
+
+### Tier 3 — Community & Affordable Devices
+
+Accessible devices for large-scale or regional deployments (e.g., Africa).
+
+| Device | OS | Access | Signals | Notes |
+|--------|-----------|----------------------------|-------------------------|-----------------------------------|
+| Huawei Band / Watch Fit | Android / iOS | Google Fit / Huawei Health Bridge | HR, HRV (limited) | Affordable & common |
+| Xiaomi Mi Band / Redmi Band | Android / iOS | Google Fit Bridge / BLE | HR, Steps, Sleep | Popular low-cost wearables |
+| Infinix / Tecno Watch Series | Android | Health Connect API | HR, Steps, Motion | Accessible in emerging markets |
+| Realme / Oppo Bands | Android | Health Connect API | HR, Sleep | Expanding Android base |
+| Amazfit / Zepp OS | Android / iOS | Zepp OS API | HR, HRV, SpO₂ | Good HR accuracy; open SDK |
+
+---
+
+### Tier 4 — Experimental / DIY Devices
+
+For the community or research prototypes.
+
+| Device | Type | SDK / Access | Notes |
+|--------|-------------|--------------|--------------------------------------|
+| Shimmer3 / Bitalino | Research kits | BLE + Open SDK | Academic-grade HR/EDA data |
+| OpenHR / Arduino-based Sensors | DIY | BLE | For education, prototyping, open wellness experiments |
+| Raspberry Pi + HR sensor module | DIY | Python SDK | For on-device inference demos |
+| Custom Synheart Wear Node | Native | Internal | Potential future open hardware project |
+
+---
+
+
+
+---
+
+
 ## 🧾 Verification & Trust
 
 To maintain data integrity, all connectors must satisfy the **Synheart Signal Integrity Standard (SIS)**:
