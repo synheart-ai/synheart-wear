@@ -45,12 +45,16 @@ class WearMetrics {
   final Map<String, num?> metrics;
   final Map<String, Object?> meta;
 
+  /// Optional list of interbeat intervals (RR) in milliseconds
+  final List<double>? rrIntervalsMs;
+
   WearMetrics({
     required this.timestamp,
     required this.deviceId,
     required this.source,
     required this.metrics,
     this.meta = const {},
+    this.rrIntervalsMs,
   });
 
   /// Create WearMetrics from JSON
@@ -61,6 +65,8 @@ class WearMetrics {
       source: json['source'] as String,
       metrics: Map<String, num?>.from(json['metrics'] as Map),
       meta: Map<String, Object?>.from(json['meta'] as Map? ?? {}),
+      rrIntervalsMs:
+          (json['rr_ms'] as List?)?.map((e) => (e as num).toDouble()).toList(),
     );
   }
 
@@ -71,6 +77,7 @@ class WearMetrics {
         'source': source,
         'metrics': metrics,
         'meta': meta,
+        if (rrIntervalsMs != null) 'rr_ms': rrIntervalsMs,
       };
 
   /// Get specific metric value with type safety
@@ -99,4 +106,7 @@ class WearMetrics {
 
   /// Check if data is synced
   bool get isSynced => meta['synced'] as bool? ?? false;
+
+  /// Convenience getter for RR intervals in milliseconds
+  List<double>? get rrMs => rrIntervalsMs;
 }

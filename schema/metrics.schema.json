@@ -57,6 +57,11 @@
         }
       },
       "additionalProperties": true
+    },
+    "rr_ms": {
+      "type": "array",
+      "items": { "type": "number" },
+      "description": "Optional list of interbeat intervals (RR) in milliseconds"
     }
   },
   "additionalProperties": false
