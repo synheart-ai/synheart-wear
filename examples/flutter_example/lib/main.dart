@@ -30,6 +30,7 @@ class _MyAppState extends State<MyApp> {
   num? _currentHrv;
   num? _currentSteps;
   num? _currentCalories;
+  List<double>? _currentRrMs;
   String _lastUpdateTime = 'No data';
 
   final _sdk = SynheartWear(
@@ -210,6 +211,7 @@ class _MyAppState extends State<MyApp> {
         (metrics) {
           setState(() {
             _updateMetrics(metrics);
+            _currentRrMs = metrics.rrMs;
             _last = 'HR Stream: ${metrics.toJson()}';
             _streamingStatus =
                 'HR streaming (${DateTime.now().toLocal().toString().substring(11, 19)})';
@@ -258,6 +260,7 @@ class _MyAppState extends State<MyApp> {
         (metrics) {
           setState(() {
             _updateMetrics(metrics);
+            _currentRrMs = metrics.rrMs;
             _last = 'HRV Stream: ${metrics.toJson()}';
             _streamingStatus =
                 'HRV streaming (${DateTime.now().toLocal().toString().substring(11, 19)})';
@@ -764,6 +767,21 @@ class _MyAppState extends State<MyApp> {
                     'kcal',
                     Colors.orange,
                     Icons.local_fire_department,
+                  ),
+                  _buildMetricCard(
+                    'RR intervals',
+                    _currentRrMs == null
+                        ? '—'
+                        : (_currentRrMs!.isEmpty
+                            ? '0'
+                            : (_currentRrMs!
+                                    .take(3)
+                                    .map((e) => e.toStringAsFixed(0))
+                                    .join(', ') +
+                                (_currentRrMs!.length > 3 ? ' …' : ''))),
+                    _currentRrMs == null ? '' : 'ms',
+                    Colors.teal,
+                    Icons.timeline,
                   ),
                 ],
               ),

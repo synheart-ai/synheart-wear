@@ -1,6 +1,6 @@
 name: synheart_wear
 description: Unified wearable SDK for Synheart (HR, HRV, steps, energy, stress).
-version: 0.1.1
+version: 0.1.2
 homepage: https://github.com/synheart-ai/synheart_wear
 environment:
   sdk: '>=3.4.0 <4.0.0'
@@ -22,5 +22,8 @@ dev_dependencies:
     sdk: flutter
   very_good_analysis: ^6.0.0
 flutter:
-  # This is now a pure Dart package that uses the health plugin
-  # No platform-specific code needed as we delegate to health package
+  # This package exposes an optional iOS plugin to fetch heartbeat series (RR)
+  plugin:
+    platforms:
+      ios:
+        pluginClass: SynheartWearPlugin

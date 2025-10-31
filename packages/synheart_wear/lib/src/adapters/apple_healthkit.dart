@@ -1,6 +1,7 @@
 import '../../synheart_wear.dart';
 import 'health_adapter.dart';
 import 'wear_adapter.dart';
+import 'healthkit_rr_channel.dart';
 
 class AppleHealthKitAdapter implements WearAdapter {
   @override
@@ -49,6 +50,24 @@ class AppleHealthKitAdapter implements WearAdapter {
         deviceId: 'applewatch_${DateTime.now().millisecondsSinceEpoch}',
         source: id,
       );
+
+      if (metrics != null) {
+        // Attempt to enrich with RR intervals via HealthKit heartbeat series
+        final rr = await HealthKitRRChannel.fetchHeartbeatSeries(
+          start: DateTime.now().subtract(const Duration(minutes: 30)),
+          end: DateTime.now(),
+        );
+        if (rr.isNotEmpty) {
+          return WearMetrics(
+            timestamp: metrics.timestamp,
+            deviceId: metrics.deviceId,
+            source: metrics.source,
+            metrics: metrics.metrics,
+            meta: metrics.meta,
+            rrIntervalsMs: rr,
+          );
+        }
+      }
 
       return metrics;
     } catch (e) {
