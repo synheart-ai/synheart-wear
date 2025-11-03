@@ -7,12 +7,15 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - synheart_wear (0.1.1):
+    - Flutter
 
 DEPENDENCIES:
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - Flutter (from `Flutter`)
   - health (from `.symlinks/plugins/health/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - synheart_wear (from `.symlinks/plugins/synheart_wear/ios`)
 
 EXTERNAL SOURCES:
   device_info_plus:
@@ -23,12 +26,15 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/health/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  synheart_wear:
+    :path: ".symlinks/plugins/synheart_wear/ios"
 
 SPEC CHECKSUMS:
   device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   health: e310387222e199d4b3261337490a67aaff6d18eb
   path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
+  synheart_wear: 5244bd32333332f08f28a960be8e0e9a374c6204
 
 PODFILE CHECKSUM: e30f02f9d1c72c47bb6344a0a748c9d268180865
 

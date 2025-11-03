@@ -379,7 +379,7 @@ packages:
       path: "../../packages/synheart_wear"
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.1.1"
   term_glyph:
     dependency: transitive
     description:
