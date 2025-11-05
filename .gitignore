@@ -85,8 +85,15 @@ node_modules/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
+# Environment files (all variants, but keep .env.example)
 .env
+.env.local
+.env.dev
+.env.production
+.env.staging
+.env.test
+.env.*
+!.env.example
 
 # IDE
 .vscode/
@@ -95,3 +102,39 @@ node_modules/
 # Temporary files
 *.tmp
 *.temp
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+.Python
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Development directories and files
+__dev__/
+*.log
+server.log
+
+# Environment files with secrets (per-service env directories)
+services/*/env/
+env/
+
+# IDE and editor files
+.vscode/
+*.swp
+*.swo
+*~
+data.json
+test_sdk_curl.sh
+test_sdk_fetch.dart
