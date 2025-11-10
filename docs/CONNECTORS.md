@@ -122,49 +122,61 @@ Learn more about submission workflow and eligibility in our [Contributing Guidel
 
 ## 🩺 Supported Devices
 
-### Tier 1 — Core Supported Devices 
+**Tier 1 — Core Supported Smart Watches**
 
 Best data quality and reliable APIs. Ideal for focus, HRV, and emotion inference.
 
-| Device | OS | SDK / API | Signals | Status |
-|--------|-----------|--------------------------|----------------------------|-----------------|
-| Apple Watch | iOS | Apple HealthKit / WatchKit | HR, HRV (SDNN), Motion, SpO₂ | ✅ Native integration |
-| Garmin Watches | iOS / Android | Garmin Health SDK | HR, HRV, Stress, Respiration | 🧩 In progress |
-| Polar H10 / Ignite / Unite | iOS / Android | Polar SDK | RR intervals, HR, HRV, Motion | ✅ Preferred research-grade HRV |
-| Fitbit Sense / Versa / Charge | iOS / Android | Fitbit Web API | HR, HRV (proxy), Sleep | 🧩 Planned |
-| WHOOP Strap 4.0 | iOS / Android | WHOOP Developer API | HRV, Recovery, Sleep | 🧩 Planned |
+| **Device** | **OS** | **SDK / API** | **Signals** | **Status** |
+| --- | --- | --- | --- | --- |
+| Apple Watch | iOS | Apple HealthKit / WatchKit | HR, HRV, ACC, SpO₂, RR, Temperature | ✅ Native integration |
+| Samsung Galaxy Watch | Android | Samsung Health Sensor SDK | HR, ACC, SpO₂, RR, Temperature , EDA, GYRO | 🧩 In progress |
+| Pixel Watch | Android | Wear OS SDK | HR, HRV, ACC, EDA, GYRO | 🧩 In progress |
+| Polar H10 / Ignite / Unite | iOS / Android | Polar SDK | HR, HRV, ACC, SpO₂, Temperature, GYRO | 🧩 In progress |
+| Garmin Watches | iOS / Android | Garmin Health SDK | HR, HRV, ACC, SpO₂, RR, Temperature, GYRO | 🧩 Planned |
+| Fitbit Sense / Versa / Charge | iOS / Android | Fitbit Web API | HR, HRV, ACC, RR, Temperature , GYRO | 🧩 Planned |
 
 ---
 
-### Tier 2 — Research & Extended Devices
+**Tier 2 — Extended Health Wearables**
+
+Best data quality and reliable APIs. Ideal for health and fitness biomarkers.
+
+| **Device** | **OS** | **SDK** | **Signals** | **Notes** |
+| --- | --- | --- | --- | --- |
+| Empatica E4 / E5 | iOS / Android | Empatica Research SDK | HR, HRV, RR, ACC, EDA, Temperature, GYRO | High-fidelity biosignals |
+| Biostrap EVO | iOS / Android | Biostrap Labs API | HR, HRV, SpO₂, RR, ACC, Temperature | Premium recovery data |
+| Oura Ring Gen 3 | iOS / Android | Oura Cloud API | HR, ACC, SpO₂, EDA, Temperature | Great for passive daily signals |
+| WHOOP Strap 4.0 | iOS / Android | WHOOP Developer API | HR, HRV, ACC, Temperature , EDA, GYRO | Provides continuous health and fitness data |
+
+---
+
+**Tier 3 — Community & Affordable Smart Watches / Bands**
+
+Accessible devices for large-scale.
+
+| **Device** | **OS** | **Access** | **Signals** | **Notes** |
+| --- | --- | --- | --- | --- |
+| Huawei Band / Watch Fit | Android / iOS | Google Fit / Huawei Health Bridge | HR, HRV, ACC, SpO₂, RR, Temperature, GYRO | Affordable & common |
+| Withings | Android / iOS | Withings Public API | HR, ACC, Temperature, GYRO | Inclusive product line |
+| Amazfit / Zepp OS | Android / iOS | Zepp OS API | HR, HRV, ACC, SpO₂, GYRO | Good HR accuracy; open SDK |
+| Oppo Bands | Android | Health Connect API | HR, HRV, SpO₂,, ACC | Expanding Android base |
+| Xiaomi Mi / Redmi / Realme Band | Android / iOS | Google Fit Bridge / BLE | HR, ACC | Popular low-cost wearables |
+| Infinix / Tecno Watch Series | Android | Health Connect API | - | Accessible in emerging markets |
+
+---
+
+**Tier 4 — Brain-computer interface devices for Research**
 
 Used in labs, affective computing, or advanced research setups.
 
-| Device | OS | SDK | Signals | Notes |
-|--------|-----------|-------------------|-------------------|-----------------------------------|
-| Empatica E4 / E5 | iOS / Android | Empatica Research SDK | HRV, EDA, Temp, Motion | High-fidelity biosignals |
-| Muse S (EEG) | iOS / Android | Muse SDK | EEG, Attention, Meditation | For focus & cognitive experiments |
-| OpenBCI Cyton / Galea | Cross-platform | OpenBCI API | EEG, EMG, HRV, EDA | Open-source neural signals |
-| Biostrap EVO | iOS / Android | Biostrap Labs API | HRV, Sleep, Respiration | Premium recovery data |
-| Oura Ring Gen 3 | iOS / Android | Oura Cloud API | HRV, Temp, Sleep | Great for passive daily signals |
+| **Device** | **OS** | **SDK** | **Signals** | **Notes** |
+| --- | --- | --- | --- | --- |
+| Muse S (EEG) | iOS / Android | Muse SDK | HR, HRV, ACC, SpO₂ | For focus & cognitive experiments |
+| OpenBCI Cyton / Galea | Cross-platform | OpenBCI API | HR, HRV, ACC, EDA GYRO | Open-source neural signals |
 
 ---
 
-### Tier 3 — Community & Affordable Devices
-
-Accessible devices for large-scale or regional deployments (e.g., Africa).
-
-| Device | OS | Access | Signals | Notes |
-|--------|-----------|----------------------------|-------------------------|-----------------------------------|
-| Huawei Band / Watch Fit | Android / iOS | Google Fit / Huawei Health Bridge | HR, HRV (limited) | Affordable & common |
-| Xiaomi Mi Band / Redmi Band | Android / iOS | Google Fit Bridge / BLE | HR, Steps, Sleep | Popular low-cost wearables |
-| Infinix / Tecno Watch Series | Android | Health Connect API | HR, Steps, Motion | Accessible in emerging markets |
-| Realme / Oppo Bands | Android | Health Connect API | HR, Sleep | Expanding Android base |
-| Amazfit / Zepp OS | Android / iOS | Zepp OS API | HR, HRV, SpO₂ | Good HR accuracy; open SDK |
-
----
-
-### Tier 4 — Experimental / DIY Devices
+### Tier 5 — Experimental / DIY Devices
 
 For the community or research prototypes.
 
