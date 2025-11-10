@@ -223,4 +223,50 @@ class LocalCache {
       throw SynheartWearError('Failed to decrypt data: $e');
     }
   }
+
+  /// Store metadata (e.g., connection status, user IDs)
+  static Future<void> storeMetadata(Map<String, Object?> metadata) async {
+    try {
+      final cacheDir = await _getCacheDirectory();
+      final metadataFile = File('${cacheDir.path}/metadata.json');
+
+      // Read existing metadata
+      Map<String, Object?> existing = {};
+      if (await metadataFile.exists()) {
+        try {
+          final content = await metadataFile.readAsString();
+          existing = jsonDecode(content) as Map<String, Object?>;
+        } catch (e) {
+          // If corrupted, start fresh
+        }
+      }
+
+      // Merge new metadata
+      existing.addAll(metadata);
+      // Remove null values
+      existing.removeWhere((key, value) => value == null);
+
+      await metadataFile.writeAsString(jsonEncode(existing));
+    } catch (e) {
+      throw SynheartWearError('Failed to store metadata: $e');
+    }
+  }
+
+  /// Get stored metadata
+  static Future<Map<String, Object?>> getMetadata() async {
+    try {
+      final cacheDir = await _getCacheDirectory();
+      final metadataFile = File('${cacheDir.path}/metadata.json');
+
+      if (!await metadataFile.exists()) {
+        return {};
+      }
+
+      final content = await metadataFile.readAsString();
+      return jsonDecode(content) as Map<String, Object?>;
+    } catch (e) {
+      // If file doesn't exist or is corrupted, return empty map
+      return {};
+    }
+  }
 }
