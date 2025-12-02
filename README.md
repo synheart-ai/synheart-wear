@@ -22,7 +22,7 @@ Choose the SDK for your platform:
 
 | Platform | Repository | Version | Installation |
 |----------|-----------|---------|--------------|
-| **Flutter/Dart** | [synheart-wear-dart](https://github.com/synheart-ai/synheart-wear-dart) | ![pub.dev](https://img.shields.io/badge/pub-0.2.0-blue) | `flutter pub add synheart_wear` |
+| **Flutter/Dart** | [synheart-wear-dart](https://github.com/synheart-ai/synheart-wear-dart) | ![pub.dev](https://img.shields.io/badge/pub-0.2.1-blue) | `flutter pub add synheart_wear` |
 | **Android (Kotlin)** | [synheart-wear-kotlin](https://github.com/synheart-ai/synheart-wear-kotlin) | ![JitPack](https://img.shields.io/badge/jitpack-0.1.0-blue) | Via JitPack |
 | **iOS (Swift)** | [synheart-wear-swift](https://github.com/synheart-ai/synheart-wear-swift) | ![SPM](https://img.shields.io/badge/spm-0.1.0-blue) | Swift Package Manager |
 
