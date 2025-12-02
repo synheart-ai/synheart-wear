@@ -138,3 +138,5 @@ env/
 data.json
 test_sdk_curl.sh
 test_sdk_fetch.dart
+
+.vscode/
