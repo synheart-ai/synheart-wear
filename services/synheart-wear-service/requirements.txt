@@ -1,6 +1,0 @@
-# Base dependencies (shared across all services)
--r ../../requirements-base.txt
-
-# Service-specific dependencies (Lambda adapter)
-mangum>=0.17.0
-

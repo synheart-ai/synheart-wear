@@ -1,2 +1,0 @@
-"""WHOOP connector integration tests."""
-
