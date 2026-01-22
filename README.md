@@ -130,12 +130,12 @@ All platform SDKs output the same **Synheart Data Schema v1.0**:
 
 | Device | Flutter | Android | iOS | Status |
 |--------|---------|---------|-----|--------|
-| **Apple Watch** | ✅ | ✅ (via Health Connect) | ✅ (via HealthKit) | Ready |
+| **Apple Watch** | ✅ | ❌  | ✅ (via HealthKit) | Ready |
 | **Health Connect** | ✅ | ✅ (Native) | ❌ | Ready |
 | **WHOOP** | ✅ | ✅ | ✅ | Ready |
-| **Fitbit** | 🔄 | ✅ | ✅ | Mixed |
-| **Garmin** | 🔄 | ✅ | 🔄 | Mixed |
-| **Samsung Watch** | 📋 | ✅ | ❌ | Android Only |
+| **Fitbit** | ✅| ✅  | ✅ | Via HealthKit/Connect |
+| **Garmin** | 🔄 | 🔄 | 🔄 | Mixed |
+| **Samsung Watch** | ✅  | ✅ | ❌ | Android Only |
 | **Oura Ring** | ✅ | ✅ | ✅ | Via HealthKit/Connect |
 
 **Legend:** ✅ Ready | 🔄 In Development | 📋 Planned
