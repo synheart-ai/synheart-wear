@@ -1,6 +1,6 @@
 # Synheart Wear
 
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 **Unified wearable SDK** — Cross-device, cross-platform biometric data normalization with a single standardized output format. Stream HR, HRV, steps, calories, and stress signals from Apple Watch, Fitbit, Garmin, Whoop, and Samsung devices across Flutter, Android, and iOS applications.
 
@@ -9,8 +9,9 @@
 ## 🚀 Features
 
 - **📱 Cross-Platform**: Works on iOS, Android, and Flutter
-- **⌚ Multi-Device Support**: Apple Watch, Fitbit, Garmin, Whoop, Samsung Watch
+- **⌚ Multi-Device Support**: Apple Watch, Fitbit, Garmin, Whoop, Samsung Watch, BLE Heart Rate Monitors
 - **🔄 Real-Time Streaming**: Live HR and HRV data streams
+- **📡 BLE HRM**: Direct Bluetooth LE heart rate monitor support (WHOOP Broadcast, Polar, Wahoo, any standard HR strap)
 - **📊 Unified Schema**: Consistent data format across all devices
 - **🔒 Privacy-First**: Consent-based data access with encryption
 - **💾 Local Storage**: Encrypted offline data persistence
@@ -130,13 +131,19 @@ All platform SDKs output the same **Synheart Data Schema v1.0**:
 
 | Device | Flutter | Android | iOS | Status |
 |--------|---------|---------|-----|--------|
-| **Apple Watch** | ✅ | ❌  | ✅ (via HealthKit) | Ready |
+| **Apple Watch** | ✅ | ✅ (via Health Connect) | ✅ (via HealthKit) | Ready |
 | **Health Connect** | ✅ | ✅ (Native) | ❌ | Ready |
-| **WHOOP** | ✅ | ✅ | ✅ | Ready |
-| **Fitbit** | ✅| ✅  | ✅ | Via HealthKit/Connect |
-| **Garmin** | 🔄 | 🔄 | 🔄 | Mixed |
-| **Samsung Watch** | ✅  | ✅ | ❌ | Android Only |
+| **WHOOP** | 🔄 | ✅ | ✅ | Mixed |
+| **BLE Heart Rate Monitors** | ✅ | ✅ | ✅ | Ready |
+| **Fitbit** | 📋 | 📋 | 📋 | Planned |
+| **Garmin (Cloud)** | ✅ | ✅ | ✅ | Ready |
+| **Garmin (Native RTS)** | ✅ | ✅ | ✅ | On demand (licensed) |
+| **Samsung Watch** | 📋 | 📋 | ❌ | Planned |
 | **Oura Ring** | ✅ | ✅ | ✅ | Via HealthKit/Connect |
+
+> **Note:** 🔄 for WHOOP on Flutter indicates Flux data processing support only (JSON transformation), not a live device adapter.
+
+> **Garmin Native RTS:** The Garmin Health SDK Real-Time Streaming (RTS) capability requires a separate license from Garmin. The `GarminHealth` facade is available on demand for licensed integrations. The underlying Garmin Health SDK code is proprietary to Garmin and is not distributed as open source. For cloud-based Garmin data (OAuth + webhooks), use `GarminProvider`.
 
 **Legend:** ✅ Ready | 🔄 In Development | 📋 Planned
 
@@ -180,6 +187,7 @@ All platform SDKs output the same **Synheart Data Schema v1.0**:
 | Document | Description |
 |----------|-------------|
 | **[RFC](docs/RFC.md)** | Design specifications and architecture |
+| **[BLE HRM RFC](docs/RFC-BLE-HRM.md)** | BLE Heart Rate Monitor provider specification |
 | **[Data Schema](schema/metrics.schema.json)** | JSON schema for metrics format |
 | **[Connector Interface](docs/CONNECTOR_INTERFACE.md)** | Guide for implementing cloud connectors |
 | **[Data Flow](docs/DATA_FLOW.md)** | Architecture diagrams and flow |
@@ -243,12 +251,12 @@ Documentation improvements are welcome in this repository:
 |---------|------|--------|
 | v0.1 | Core SDK (HealthKit + Fitbit) | ✅ Complete |
 | v0.2 | Extended device support (WHOOP) & Real-time streaming (HR/HRV) | ✅ Complete |
-| v0.3 | Extended device support (Garmin) | 🔄 In Progress |
+| v0.3 | BLE Heart Rate Monitor support & Extended device support (Garmin) | 🔄 In Progress |
 | v1.0 | Public Release | 📋 Planned |
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
 
 ## 🔗 Links
 

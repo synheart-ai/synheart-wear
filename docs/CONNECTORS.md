@@ -122,6 +122,22 @@ Learn more about submission workflow and eligibility in our [Contributing Guidel
 
 ## 🩺 Supported Devices
 
+**Tier 0 — BLE Heart Rate Monitors (Direct Connection)**
+
+Any standard Bluetooth LE heart rate device. No cloud API needed — connects directly over BLE.
+
+| **Device** | **OS** | **SDK / API** | **Signals** | **Status** |
+| --- | --- | --- | --- | --- |
+| WHOOP (Broadcast HR) | iOS / Android | CoreBluetooth / Android BLE | HR | ✅ Implemented |
+| Polar H10 / OH1 | iOS / Android | CoreBluetooth / Android BLE | HR, RR intervals | ✅ Implemented |
+| Wahoo TICKR | iOS / Android | CoreBluetooth / Android BLE | HR, RR intervals | ✅ Implemented |
+| Garmin HRM-Pro / Dual | iOS / Android | CoreBluetooth / Android BLE | HR, RR intervals | ✅ Implemented |
+| Any BLE HR strap | iOS / Android | Standard BLE HR Profile (0x180D) | HR, RR intervals (if supported) | ✅ Implemented |
+
+See [RFC-BLE-HRM](RFC-BLE-HRM.md) for full specification.
+
+---
+
 **Tier 1 — Core Supported Smart Watches**
 
 Best data quality and reliable APIs. Ideal for focus, HRV, and emotion inference.
@@ -129,11 +145,14 @@ Best data quality and reliable APIs. Ideal for focus, HRV, and emotion inference
 | **Device** | **OS** | **SDK / API** | **Signals** | **Status** |
 | --- | --- | --- | --- | --- |
 | Apple Watch | iOS | Apple HealthKit / WatchKit | HR, HRV, ACC, SpO₂, RR, Temperature | ✅ Native integration |
-| Samsung Galaxy Watch | Android | Samsung Health Sensor SDK | HR, ACC, SpO₂, RR, Temperature , EDA, GYRO | 🧩 In progress |
+| Samsung Galaxy Watch | Android | Samsung Health Sensor SDK | HR, ACC, SpO₂, RR, Temperature , EDA, GYRO | 📋 Planned |
 | Pixel Watch | Android | Wear OS SDK | HR, HRV, ACC, EDA, GYRO | 🧩 In progress |
 | Polar H10 / Ignite / Unite | iOS / Android | Polar SDK | HR, HRV, ACC, SpO₂, Temperature, GYRO | 🧩 In progress |
-| Garmin Watches | iOS / Android | Garmin Health SDK | HR, HRV, ACC, SpO₂, RR, Temperature, GYRO | 🧩 Planned |
+| Garmin Watches (Cloud) | iOS / Android | Garmin Health API (OAuth) | HR, HRV, Sleep, Stress, SpO₂, Body Composition | ✅ Cloud API |
+| Garmin Watches (Native RTS) | iOS / Android | Garmin Health SDK | HR, HRV, ACC, SpO₂, RR, Temperature, GYRO | ✅ On demand (licensed) |
 | Fitbit Sense / Versa / Charge | iOS / Android | Fitbit Web API | HR, HRV, ACC, RR, Temperature , GYRO | 🧩 Planned |
+
+> **Garmin Health SDK (RTS):** The Garmin Health SDK Real-Time Streaming (RTS) capability requires a separate license from Garmin. The Synheart Wear SDK supports Garmin RTS through the `GarminHealth` facade, which is available on demand for licensed integrations. The underlying Garmin Health SDK code is proprietary to Garmin and is not distributed as open source. For cloud-based Garmin data (OAuth + webhooks), use the `GarminProvider` which is included in the open-source SDK.
 
 ---
 

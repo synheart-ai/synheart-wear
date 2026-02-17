@@ -152,11 +152,13 @@ void main() async {
 | ------------- | --------------- | ---------------------- |
 | Apple Watch   | iOS             | HealthKit              |
 | Fitbit        | Android / iOS   | REST API               |
-| Garmin        | Android / iOS   | Garmin Connect API     |
+| Garmin (Cloud)| Android / iOS   | Garmin Health API (OAuth) |
+| Garmin (Native RTS) | Android / iOS | Garmin Health SDK (licensed, on demand) |
 | Whoop         | iOS / Android   | REST API               |
 | Samsung Watch | Android         | Samsung Health SDK     |
+| BLE Heart Rate Monitors | iOS / Android | Bluetooth LE (0x180D) |
 
-Future versions will include OpenWear (BLE) support.
+BLE HRM support enables direct connection to any standard Bluetooth LE heart rate device (WHOOP Broadcast, Polar, Wahoo, Garmin HRM straps, gym equipment). See [RFC-BLE-HRM](RFC-BLE-HRM.md) for the full specification.
 
 ---
 
@@ -186,7 +188,8 @@ Future versions will include OpenWear (BLE) support.
 |-------- |----------------------|-------------------------------------|
 | v0.1    | Core SDK             | Apple Watch + Fitbit integration    |
 | v0.2    | Real-time streaming  | HRV, HR over BLE                    |
-| v0.3    | Extended device support | Garmin, Whoop, Samsung integration |
+| v0.2.1  | WHOOP cloud support  | WHOOP API integration                |
+| v0.3    | BLE HRM + Extended support | BLE HR monitors, Garmin cloud + native SDK integration |
 | v0.4    | SWIP integration     | Add impact measurement hooks        |
 | v1.0    | Public Release       | Open standard SDK and docs          |
 
