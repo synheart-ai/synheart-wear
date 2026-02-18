@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="synheart_red">#FFE53935</color>
+    <color name="synheart_red_dark">#FFC62828</color>
+    <color name="synheart_purple">#FF7B1FA2</color>
+    <color name="synheart_green">#FF43A047</color>
+    <color name="synheart_orange">#FFFB8C00</color>
+    <color name="synheart_blue">#FF1E88E5</color>
+    <color name="synheart_teal">#FF00897B</color>
+</resources>

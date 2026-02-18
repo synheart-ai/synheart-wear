@@ -1,0 +1,27 @@
+name: SynheartWearExample
+options:
+  bundleIdPrefix: ai.synheart.wear
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "15.0"
+
+packages:
+  SynheartWear:
+    path: ../../../synheart-wear-swift
+
+targets:
+  SynheartWearExample:
+    type: application
+    platform: iOS
+    sources:
+      - SynheartWearExample
+    settings:
+      base:
+        INFOPLIST_FILE: SynheartWearExample/Info.plist
+        CODE_SIGN_ENTITLEMENTS: SynheartWearExample/SynheartWearExample.entitlements
+        SWIFT_VERSION: "5.9"
+        TARGETED_DEVICE_FAMILY: "1,2"
+    dependencies:
+      - package: SynheartWear
+    entitlements:
+      path: SynheartWearExample/SynheartWearExample.entitlements

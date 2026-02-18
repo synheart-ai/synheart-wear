@@ -33,6 +33,16 @@ class _MyAppState extends State<MyApp> {
   List<double>? _currentRrMs;
   String _lastUpdateTime = 'No data';
 
+  // BLE HRM state
+  final _bleHrm = BleHrmProvider();
+  bool _isBleScan = false;
+  bool _bleConnected = false;
+  bool _isBleStreaming = false;
+  List<BleHrmDevice> _bleDevices = [];
+  int? _bleHeartRate;
+  String? _bleDeviceName;
+  StreamSubscription<HeartRateSample>? _bleSubscription;
+
   final _sdk = SynheartWear(
     config: const SynheartWearConfig(
       enableLocalCaching: true,
@@ -51,6 +61,8 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     _hrSubscription?.cancel();
     _hrvSubscription?.cancel();
+    _bleSubscription?.cancel();
+    _bleHrm.dispose();
     _sdk.dispose();
     super.dispose();
   }
@@ -195,6 +207,22 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  Future<void> _getCachedSessions() async {
+    try {
+      final sessions = await _sdk.getCachedSessions(
+        startDate: DateTime.now().subtract(const Duration(days: 30)),
+      );
+
+      setState(() {
+        _status = 'Cached sessions: ${sessions.length} found';
+      });
+    } catch (e) {
+      setState(() {
+        _status = 'Cached sessions error: $e';
+      });
+    }
+  }
+
   Future<void> _startHrStreaming() async {
     try {
       if (_isHrStreaming) {
@@ -299,6 +327,98 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _streamingStatus = 'All streams stopped';
     });
+  }
+
+  // ── BLE HRM ──────────────────────────────────────────────
+
+  Future<void> _scanBle() async {
+    try {
+      setState(() {
+        _isBleScan = true;
+        _status = 'Scanning for BLE HR monitors...';
+      });
+      final devices = await _bleHrm.scan(timeoutMs: 10000);
+      setState(() {
+        _isBleScan = false;
+        _bleDevices = devices;
+        _status = '${devices.length} BLE device(s) found';
+      });
+    } catch (e) {
+      setState(() {
+        _isBleScan = false;
+        _status = 'BLE scan error: $e';
+      });
+    }
+  }
+
+  Future<void> _connectBle(String deviceId) async {
+    try {
+      setState(() {
+        _status = 'Connecting to BLE device...';
+      });
+      await _bleHrm.connect(deviceId: deviceId);
+      final connected = await _bleHrm.isConnected();
+      setState(() {
+        _bleConnected = connected;
+        _bleDeviceName =
+            _bleDevices.firstWhere((d) => d.deviceId == deviceId).name;
+        _status = connected ? 'BLE device connected' : 'BLE connection failed';
+      });
+    } catch (e) {
+      setState(() {
+        _status = 'BLE connect error: $e';
+      });
+    }
+  }
+
+  Future<void> _disconnectBle() async {
+    try {
+      await _bleSubscription?.cancel();
+      _bleSubscription = null;
+      await _bleHrm.disconnect();
+      setState(() {
+        _bleConnected = false;
+        _bleDeviceName = null;
+        _bleHeartRate = null;
+        _isBleStreaming = false;
+        _status = 'BLE device disconnected';
+      });
+    } catch (e) {
+      setState(() {
+        _status = 'BLE disconnect error: $e';
+      });
+    }
+  }
+
+  void _toggleBleStream() {
+    if (_isBleStreaming) {
+      _bleSubscription?.cancel();
+      _bleSubscription = null;
+      setState(() {
+        _isBleStreaming = false;
+        _status = 'BLE HR stream stopped';
+      });
+    } else {
+      _bleSubscription = _bleHrm.onHeartRate.listen(
+        (sample) {
+          setState(() {
+            _bleHeartRate = sample.bpm.toInt();
+            _lastUpdateTime =
+                DateTime.now().toLocal().toString().substring(11, 19);
+          });
+        },
+        onError: (error) {
+          setState(() {
+            _isBleStreaming = false;
+            _status = 'BLE HR stream error: $error';
+          });
+        },
+      );
+      setState(() {
+        _isBleStreaming = true;
+        _status = 'BLE HR stream started';
+      });
+    }
   }
 
   @override
@@ -436,6 +556,12 @@ class _MyAppState extends State<MyApp> {
                 Icons.clear,
                 Colors.grey,
                 _clearOldCache,
+              ),
+              _buildActionButton(
+                'Cached Sessions',
+                Icons.history,
+                Colors.teal,
+                _getCachedSessions,
               ),
             ],
           ),
@@ -613,6 +739,140 @@ class _MyAppState extends State<MyApp> {
           Expanded(
             child: _buildMetricsDisplay(),
           ),
+
+          // ── BLE Heart Rate Monitor ─────────────────────
+          const SizedBox(height: 20),
+          const Text(
+            'BLE Heart Rate Monitor',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+
+          // BLE status card
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Icon(
+                    _bleConnected ? Icons.bluetooth_connected : Icons.bluetooth,
+                    color: _bleConnected ? Colors.blue : Colors.grey,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _bleConnected
+                              ? 'Connected: ${_bleDeviceName ?? "BLE Device"}'
+                              : 'No BLE Device Connected',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: _bleConnected ? Colors.blue : Colors.grey,
+                          ),
+                        ),
+                        if (_bleHeartRate != null)
+                          Text(
+                            'BLE HR: $_bleHeartRate BPM',
+                            style: const TextStyle(
+                                color: Colors.red, fontSize: 12),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          if (!_bleConnected) ...[
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: _isBleScan ? null : _scanBle,
+                icon: _isBleScan
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.bluetooth_searching, color: Colors.white),
+                label: Text(
+                  _isBleScan ? 'Scanning...' : 'Scan for BLE HR Monitors',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+            if (_bleDevices.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              const Text(
+                'Discovered Devices',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              ),
+              const SizedBox(height: 4),
+              ..._bleDevices.map(
+                (device) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: OutlinedButton(
+                    onPressed: () => _connectBle(device.deviceId),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.bluetooth, color: Colors.blue),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(device.name)),
+                        const Text('Connect',
+                            style: TextStyle(color: Colors.blue)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ] else ...[
+            Row(
+              children: [
+                Expanded(
+                  child: _buildStreamButton(
+                    'BLE HR',
+                    _isBleStreaming ? 'Stop' : 'Start',
+                    _isBleStreaming ? Icons.stop : Icons.play_arrow,
+                    _isBleStreaming ? Colors.red : Colors.blue,
+                    _toggleBleStream,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _disconnectBle,
+                    icon: const Icon(Icons.link_off, color: Colors.white),
+                    label: const Text('Disconnect',
+                        style: TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (_bleHeartRate != null) ...[
+              const SizedBox(height: 12),
+              _buildMetricCard(
+                'BLE Heart Rate',
+                '$_bleHeartRate',
+                'BPM',
+                Colors.blue,
+                Icons.bluetooth,
+              ),
+            ],
+          ],
         ],
       ),
     );
