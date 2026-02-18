@@ -9,7 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
   synheart_wear:
-    path: ../../packages/synheart_wear
+    path: ../../../synheart-wear-dart
 dev_dependencies:
   flutter_test:
     sdk: flutter

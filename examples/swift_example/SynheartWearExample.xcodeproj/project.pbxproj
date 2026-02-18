@@ -1,0 +1,394 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		227E9E0BD748253DC6B93CFB /* MetricCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FB2E0B7C3769FC63B7BCD0 /* MetricCardView.swift */; };
+		36E17E85A70ABB859F4FB26A /* StreamingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C5AE3DDCCE251A65F02D6E /* StreamingView.swift */; };
+		38987D42B8EC9FFA11C12C1A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67160F2D2B5B0FFDC0765C0C /* Assets.xcassets */; };
+		41573171511E16C497A5C672 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148539B35A65A17CE594701A /* ContentView.swift */; };
+		5C21404D59E7A3D22415FCF7 /* SynheartWearExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92CCC8E50073664A29C3CAE /* SynheartWearExampleApp.swift */; };
+		7C030F6AD0CFDB4887838F4E /* StatusCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3A736D505DB9A86BFFBB65 /* StatusCardView.swift */; };
+		87A9A13A9F3EE9DACEB212D6 /* HealthDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04D7325A8EB2C71BA8BD7BF /* HealthDataView.swift */; };
+		8A3AD5E1A882C4EFDF053CDD /* SynheartWear in Frameworks */ = {isa = PBXBuildFile; productRef = 654B5FA67EC2AF84FE105290 /* SynheartWear */; };
+		E18E4E6FCEAE562F7001DFC3 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B9C2E9E29C0E0FC13DD9A15 /* DashboardView.swift */; };
+		E1A9B766019F736AF82A1049 /* HealthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53222A4EFE8276C552BF3FF3 /* HealthViewModel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		01B98DDD2738E6573E81E65A /* synheart-wear-swift */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "synheart-wear-swift"; path = "../../../synheart-wear-swift"; sourceTree = SOURCE_ROOT; };
+		0B9C2E9E29C0E0FC13DD9A15 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		148539B35A65A17CE594701A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		53222A4EFE8276C552BF3FF3 /* HealthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthViewModel.swift; sourceTree = "<group>"; };
+		67160F2D2B5B0FFDC0765C0C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		87C5AE3DDCCE251A65F02D6E /* StreamingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingView.swift; sourceTree = "<group>"; };
+		B1458927FDC5230A6A67E17A /* SynheartWearExample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SynheartWearExample.entitlements; sourceTree = "<group>"; };
+		C26A4106AABD82EC68972E2B /* SynheartWearExample.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SynheartWearExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2FB2E0B7C3769FC63B7BCD0 /* MetricCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricCardView.swift; sourceTree = "<group>"; };
+		CF3A736D505DB9A86BFFBB65 /* StatusCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusCardView.swift; sourceTree = "<group>"; };
+		D59A60B425BECFC4091FBE62 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D92CCC8E50073664A29C3CAE /* SynheartWearExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynheartWearExampleApp.swift; sourceTree = "<group>"; };
+		E04D7325A8EB2C71BA8BD7BF /* HealthDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4FE7529CF1CB708CF25D402D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A3AD5E1A882C4EFDF053CDD /* SynheartWear in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0672AA63FD6E461C1222EC0A /* SynheartWearExample */ = {
+			isa = PBXGroup;
+			children = (
+				67160F2D2B5B0FFDC0765C0C /* Assets.xcassets */,
+				148539B35A65A17CE594701A /* ContentView.swift */,
+				D59A60B425BECFC4091FBE62 /* Info.plist */,
+				B1458927FDC5230A6A67E17A /* SynheartWearExample.entitlements */,
+				D92CCC8E50073664A29C3CAE /* SynheartWearExampleApp.swift */,
+				4144D53F9028F25A6C95396B /* ViewModels */,
+				4F6616210DEE58171EB41ABF /* Views */,
+			);
+			path = SynheartWearExample;
+			sourceTree = "<group>";
+		};
+		4144D53F9028F25A6C95396B /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				53222A4EFE8276C552BF3FF3 /* HealthViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		4BEAE9174539827BF6F37261 = {
+			isa = PBXGroup;
+			children = (
+				839C45B0FE16DDEB043B67CA /* Packages */,
+				0672AA63FD6E461C1222EC0A /* SynheartWearExample */,
+				E2915C09E03B0C095099DD0C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4EAB552CE2329E8E0D1539E6 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				C2FB2E0B7C3769FC63B7BCD0 /* MetricCardView.swift */,
+				CF3A736D505DB9A86BFFBB65 /* StatusCardView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		4F6616210DEE58171EB41ABF /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				0B9C2E9E29C0E0FC13DD9A15 /* DashboardView.swift */,
+				E04D7325A8EB2C71BA8BD7BF /* HealthDataView.swift */,
+				87C5AE3DDCCE251A65F02D6E /* StreamingView.swift */,
+				4EAB552CE2329E8E0D1539E6 /* Components */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		839C45B0FE16DDEB043B67CA /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				01B98DDD2738E6573E81E65A /* synheart-wear-swift */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		E2915C09E03B0C095099DD0C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C26A4106AABD82EC68972E2B /* SynheartWearExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CB61028CFF049A43669986A9 /* SynheartWearExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6B23298EE3C23F22FB23C3C6 /* Build configuration list for PBXNativeTarget "SynheartWearExample" */;
+			buildPhases = (
+				816E6A0F2FEAC8DEE1E87111 /* Sources */,
+				99A904A3AA844038BAE8A311 /* Resources */,
+				4FE7529CF1CB708CF25D402D /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SynheartWearExample;
+			packageProductDependencies = (
+				654B5FA67EC2AF84FE105290 /* SynheartWear */,
+			);
+			productName = SynheartWearExample;
+			productReference = C26A4106AABD82EC68972E2B /* SynheartWearExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9201990C23C3C3B8AE723E8F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+			};
+			buildConfigurationList = 12B221C84FDC8641D278467F /* Build configuration list for PBXProject "SynheartWearExample" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 4BEAE9174539827BF6F37261;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E904C0D25C41EE68C7026FDC /* XCLocalSwiftPackageReference "../../../synheart-wear-swift" */,
+			);
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CB61028CFF049A43669986A9 /* SynheartWearExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		99A904A3AA844038BAE8A311 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				38987D42B8EC9FFA11C12C1A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		816E6A0F2FEAC8DEE1E87111 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41573171511E16C497A5C672 /* ContentView.swift in Sources */,
+				E18E4E6FCEAE562F7001DFC3 /* DashboardView.swift in Sources */,
+				87A9A13A9F3EE9DACEB212D6 /* HealthDataView.swift in Sources */,
+				E1A9B766019F736AF82A1049 /* HealthViewModel.swift in Sources */,
+				227E9E0BD748253DC6B93CFB /* MetricCardView.swift in Sources */,
+				7C030F6AD0CFDB4887838F4E /* StatusCardView.swift in Sources */,
+				36E17E85A70ABB859F4FB26A /* StreamingView.swift in Sources */,
+				5C21404D59E7A3D22415FCF7 /* SynheartWearExampleApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1A94826E367241739F6449CB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SynheartWearExample/SynheartWearExample.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = SynheartWearExample/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ai.synheart.wear.SynheartWearExample;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		38B58ACB0C698792DB248F3C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		BBD3844E179C6DC2AB184790 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SynheartWearExample/SynheartWearExample.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = SynheartWearExample/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ai.synheart.wear.SynheartWearExample;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C7F56A81326BE1CB115C3C63 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		12B221C84FDC8641D278467F /* Build configuration list for PBXProject "SynheartWearExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				38B58ACB0C698792DB248F3C /* Debug */,
+				C7F56A81326BE1CB115C3C63 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		6B23298EE3C23F22FB23C3C6 /* Build configuration list for PBXNativeTarget "SynheartWearExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BBD3844E179C6DC2AB184790 /* Debug */,
+				1A94826E367241739F6449CB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		E904C0D25C41EE68C7026FDC /* XCLocalSwiftPackageReference "../../../synheart-wear-swift" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../../synheart-wear-swift";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		654B5FA67EC2AF84FE105290 /* SynheartWear */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SynheartWear;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 9201990C23C3C3B8AE723E8F /* Project object */;
+}

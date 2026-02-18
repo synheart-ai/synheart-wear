@@ -7,7 +7,12 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - synheart_wear (0.1.1):
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - synheart_wear (0.2.0):
+    - Flutter
+  - url_launcher_ios (0.0.1):
     - Flutter
 
 DEPENDENCIES:
@@ -15,7 +20,9 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - health (from `.symlinks/plugins/health/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - synheart_wear (from `.symlinks/plugins/synheart_wear/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 EXTERNAL SOURCES:
   device_info_plus:
@@ -26,15 +33,21 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/health/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   synheart_wear:
     :path: ".symlinks/plugins/synheart_wear/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
   device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   health: e310387222e199d4b3261337490a67aaff6d18eb
   path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
-  synheart_wear: 5244bd32333332f08f28a960be8e0e9a374c6204
+  shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
+  synheart_wear: 0c7b2eb1c8240cd4cd7e6cc5536aa8c31a61a3e7
+  url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
 
 PODFILE CHECKSUM: e30f02f9d1c72c47bb6344a0a748c9d268180865
 
