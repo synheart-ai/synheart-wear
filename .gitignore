@@ -141,3 +141,8 @@ test_sdk_fetch.dart
 
 .vscode/
 docs/RFC-BLE-HRM.md
+
+# Secrets & credentials
+*.asc
+*.key
+*private*

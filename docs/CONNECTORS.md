@@ -47,11 +47,6 @@ class YourDeviceAdapter implements WearAdapter {
   };
 
   @override
-  Future<void> ensurePermissions() async {
-    // Implement device authentication and permission handling
-  }
-
-  @override
   Future<WearMetrics?> readSnapshot({bool isRealTime = true}) async {
     // Read and normalize data from your device
   }
@@ -63,7 +58,6 @@ class YourDeviceAdapter implements WearAdapter {
 Your adapter must implement the `WearAdapter` interface with:
 - **id**: Unique device identifier
 - **supportedPermissions**: Set of biometric data types supported
-- **ensurePermissions()**: Handle device authentication
 - **readSnapshot()**: Read and normalize device data
 
 ### 4. Add Tests
