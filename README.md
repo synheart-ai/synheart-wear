@@ -182,6 +182,21 @@ All platform SDKs output the same **Synheart Data Schema v1.0**:
 - **synheart-wear-swift**: Native iOS SDK with HealthKit
 - **synheart-wear-cli**: Local development server with OAuth, webhooks, and ngrok for cloud wearables (WHOOP, Garmin, Fitbit)
 
+## ⌚ Watch Companion Apps
+
+Due to platform limitations in **Apple HealthKit** (iOS) and **Google Health Services** (Android), real-time biometric data (HR, HRV, accelerometer) **cannot be accessed without an active workout or exercise session**. Background or passive real-time HR streaming is not supported by these APIs.
+
+To address this, Synheart provides **session-based watch companion apps** that run workout/exercise sessions on the watch to unlock continuous real-time data streaming:
+
+| App | Platform | Repository | Description |
+|-----|----------|-----------|-------------|
+| **watchOS Companion** | Apple Watch | [synheart-wear-watch-ios](https://github.com/synheart-ai/synheart-wear-watch-ios) | SwiftUI app using `HKWorkoutSession` for real-time HR, on-device HRV (SDNN, RMSSD), accelerometer at 25 Hz, and active energy via `HKLiveWorkoutBuilder` |
+| **Wear OS Companion** | Wear OS | [synheart-wear-watch-android](https://github.com/synheart-ai/synheart-wear-watch-android) | Compose app using Health Services exercise mode for real-time HR, on-device HRV, accelerometer, and data relay via `MessageClient`/`DataClient` |
+
+These companion apps are designed to work with the [Synheart Session SDK](https://github.com/synheart-ai/synheart-session), which provides the session lifecycle, protocol, and phone-side integration for receiving streamed data from the watch.
+
+> **Note**: For non-realtime or historical data (daily summaries, sleep, recovery), the standard Synheart Wear SDKs can access this data directly through HealthKit / Health Connect without requiring a workout session.
+
 ## 📖 Documentation
 
 | Document | Description |
@@ -209,6 +224,19 @@ flutter run
 - Real-time HR/HRV streaming
 - Local cache management
 - Multi-source data integration
+
+## Repository Role
+
+> **This is a source-of-truth repository** — it contains specifications, documentation, RFCs, schemas, and shared resources that define the contracts for all platform SDK implementations.
+>
+> Active development happens in the platform-specific SDK repositories listed below. If you find a bug, need a feature, or want to open an issue, **please open it in the relevant platform repo** unless it concerns the specification, architecture, or shared resources defined here.
+
+| Platform SDK / Tool | Repository |
+|---------------------|------------|
+| Dart | [synheart-wear-dart](https://github.com/synheart-ai/synheart-wear-dart) |
+| Kotlin | [synheart-wear-kotlin](https://github.com/synheart-ai/synheart-wear-kotlin) |
+| Swift | [synheart-wear-swift](https://github.com/synheart-ai/synheart-wear-swift) |
+| CLI | [synheart-wear-cli](https://github.com/synheart-ai/synheart-wear-cli) |
 
 ## 🤝 Contributing
 
